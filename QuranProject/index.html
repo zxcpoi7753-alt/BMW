@@ -3,135 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>حلقات الثريا لتعليم القرآن الكريم</title>
-    
+    <title>حلقات الثريا - V3</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="css/themes.css"> <link rel="stylesheet" href="css/main.css">   </head>
+    <link rel="stylesheet" href="css/themes.css">
+    <link rel="stylesheet" href="css/main.css"> <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
 <body>
 
-    <div id="site-loader" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg-color); z-index:9999; display:flex; justify-content:center; align-items:center;">
-        <h3 style="color:var(--primary-color);">جاري التحميل...</h3>
-    </div>
-
-    <div id="maintenance-mode" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#1e293b; color:white; z-index:99999; flex-direction:column; justify-content:center; align-items:center; text-align:center;">
-        <h1 style="font-size:3rem;">🚧</h1>
-        <h2>الموقع تحت الصيانة</h2>
-        <p>سنعود قريباً بإذن الله</p>
-        <button onclick="openLoginModal()" style="margin-top:20px; background:transparent; border:1px solid white; color:white; padding:5px 15px; border-radius:20px; cursor:pointer;">دخول المشرف</button>
-    </div>
-
-    <div id="site-notification" class="popup-overlay">
-        <div class="popup-content">
-            <h3 id="notif-title" style="margin-top:0;">📢 تنبيه</h3>
-            <p id="notif-body">...</p>
-            <button onclick="closePopup()" class="nav-btn active" style="margin-top:15px;">حسناً</button>
-            <label style="display:block; margin-top:10px; font-size:0.8rem; cursor:pointer;">
-                <input type="checkbox" id="popup-forever-check"> لا تظهر مرة أخرى
-            </label>
-            <button onclick="disablePopupForever()" style="background:none; border:none; color:gray; text-decoration:underline; cursor:pointer; font-size:0.8rem;">تأكيد</button>
-        </div>
+    <div id="site-loader">
+        <h3 style="color:#047857;">جاري التحميل...</h3>
     </div>
 
     <header>
-        <button class="theme-circle-btn" onclick="toggleTheme()" title="الوضع الليلي">🌙</button>
-        <div class="video-container">
-            <video id="bg-video" autoplay muted loop playsinline></video>
-        </div>
-        
+        <button class="theme-circle-btn" onclick="toggleTheme()" style="top:10px; left:10px;">🌙</button>
         <h1 id="txt_header_title">حلقات الثريا</h1>
         <p class="header-subtitle" id="txt_header_subtitle">لتعليم القرآن الكريم</p>
         <span class="header-location" id="txt_header_location">حضرموت - غيل باوزير</span>
     </header>
 
-    <div id="top-loader"></div>
+    <div class="nav-container-wrapper">
+        <div class="nav-bar-btn active" onclick="showSection('home')">
+            <i class="fas fa-home"></i> الرئيسية
+        </div>
+        <div class="nav-bar-btn" onclick="document.getElementById('nav-menu').style.display = document.getElementById('nav-menu').style.display==='block'?'none':'block'">
+            <i class="fas fa-th-large"></i> بقية الأقسام
+        </div>
+    </div>
+    
+    <div id="nav-menu" style="display:none; max-width:600px; margin:10px auto; padding:0 15px;">
+        <div class="card" style="display:grid; grid-template-columns:repeat(2,1fr); gap:10px;">
+            <button class="nav-bar-btn" onclick="showSection('home')">🏠 الرئيسية</button>
+            <button class="nav-bar-btn" onclick="showSection('teachers')">👨‍🏫 المعلمون</button>
+            <button class="nav-bar-btn" onclick="showSection('schedule')">📅 الجداول</button>
+            <button class="nav-bar-btn" onclick="showSection('ranks')">🏆 الأوائل</button>
+        </div>
+    </div>
 
     <div class="container">
-        
-        <div id="block-news" style="display:none;">
-            <div class="section-title">📢 آخر الأخبار</div>
-            <div class="card" style="background: var(--bg-light); padding:15px;">
-                <marquee id="dynamic-news-bar" direction="right" scrollamount="6" style="font-weight:bold; color:var(--text-main);">
-                    جاري التحميل...
-                </marquee>
-            </div>
-        </div>
 
-        <div id="dynamic-custom-cards-container"></div>
-
-        <div id="block-student" style="display:none;">
-            <div class="section-title">🎓 ركن الطالب</div>
-            <div class="student-grid">
-                <a href="#" class="st-btn"><span>📖</span> المصحف</a>
-                <a href="#" class="st-btn"><span>📿</span> الأذكار</a>
-                <a href="#" class="st-btn"><span>📚</span> المتون</a>
-                <a href="#" class="st-btn"><span>📝</span> الاختبارات</a>
-                <a href="#" class="st-btn"><span>📊</span> التقارير</a>
-                <a href="#" class="st-btn"><span>🏆</span> الخطط</a>
-            </div>
-        </div>
-
-        <div id="block-question" style="display:none;">
-            <div class="section-title">❓ سؤال الأسبوع</div>
-            <div class="card" style="border-right: 4px solid var(--warning);">
-                <p id="weekly-question-text" style="font-size:1.1rem; margin-top:0;">...</p>
-                <div style="background:rgba(245, 158, 11, 0.1); padding:10px; border-radius:8px; margin-top:10px;">
-                    <small>🏆 الفائز الأخير:</small> <strong id="weekly-winner-text" style="color:var(--primary-color);">...</strong>
+        <div id="section-home" class="page-section active">
+            
+            <div id="block-news" style="display:none; margin-top:20px;">
+                <div class="section-title"><i class="fas fa-bullhorn"></i> آخر الأخبار</div>
+                <div class="card" style="padding:10px;">
+                    <marquee id="dynamic-news-bar" direction="right" scrollamount="6" style="color:#333; font-weight:bold;">...</marquee>
                 </div>
             </div>
-        </div>
 
-        <div id="block-ranks" style="display:none;">
-            <div class="section-title">🏆 لوحة الشرف</div>
-            <div class="card">
+            <div id="block-student" style="display:none;">
+                <div class="section-title"><i class="fas fa-graduation-cap"></i> ركن الطالب</div>
+                <div class="student-grid">
+                    <a href="#" class="st-card"><i class="fas fa-book-open st-icon"></i> المصحف</a>
+                    <a href="#" class="st-card"><i class="fas fa-praying-hands st-icon"></i> الأذكار</a>
+                    <a href="#" class="st-card"><i class="fas fa-book st-icon"></i> المتون</a>
+                    <a href="#" class="st-card"><i class="fas fa-pen-alt st-icon"></i> الاختبارات</a>
+                    <a href="#" class="st-card"><i class="fas fa-chart-bar st-icon"></i> التقارير</a>
+                    <a href="#" class="st-card"><i class="fas fa-trophy st-icon"></i> الخطط</a>
+                </div>
+            </div>
+
+            <div id="block-question" style="display:none;">
+                <div class="section-title"><i class="fas fa-question-circle"></i> سؤال الأسبوع</div>
+                <div class="card" style="border-right: 4px solid #f59e0b;">
+                    <p id="weekly-question-text" style="font-weight:bold; margin-top:0;">...</p>
+                    <div style="background:#fffbeb; padding:8px; border-radius:8px; font-size:0.9rem;">
+                        🏆 الفائز: <span id="weekly-winner-text" style="color:#d97706; font-weight:bold;">...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="block-ranks-home">
+                <div class="section-title"><i class="fas fa-medal"></i> لوحة الشرف</div>
                 <div id="dynamic-ranks-list"></div>
             </div>
+
+            <div class="section-title"><i class="fas fa-mosque"></i> من نحن</div>
+            <div class="card" id="txt_about_content" style="white-space: pre-line; line-height:1.8; text-align:center;"></div>
         </div>
 
-        <div id="block-schedule" style="display:none;">
+        <div id="section-schedule" class="page-section">
+            <h2 style="text-align:center; color:#047857;">📅 الجداول الدراسية</h2>
             <div id="dynamic-schedule-container"></div>
             
-            <div class="section-title" style="margin-top:20px; color:var(--danger);">🏖️ الإجازات الرسمية</div>
-            <div class="card" style="border-right: 4px solid var(--danger);">
+            <div class="section-title" style="color:#ef4444;">🏖️ الإجازات</div>
+            <div class="card">
                 <ul id="dynamic-holidays-list" style="padding-right:20px; margin:0;"></ul>
             </div>
+            <button onclick="showSection('home')" class="nav-bar-btn" style="width:100%; margin-top:20px;">رجوع للرئيسية</button>
         </div>
 
-        <div id="block-teachers" style="display:none;">
-            <div class="section-title">👨‍🏫 معلمو الحلقات</div>
+        <div id="section-teachers" class="page-section">
+            <h2 style="text-align:center; color:#047857;">👨‍🏫 المعلمون</h2>
             <div class="card">
                 <div id="dynamic-teachers-container"></div>
             </div>
+            <button onclick="showSection('home')" class="nav-bar-btn" style="width:100%; margin-top:20px;">رجوع للرئيسية</button>
         </div>
-
-        <div class="card" style="margin-top:30px;">
-            <div class="section-title">📜 من نحن</div>
-            <div id="txt_about_content" style="white-space: pre-line; line-height: 2; text-align: center;"></div>
-        </div>
-
-        <footer>
-            جميع الحقوق محفوظة © حلقات الثريا 2026
-            <br>
-            <button onclick="openLoginModal()" style="background:none; border:none; color:gray; margin-top:10px; cursor:pointer;">🔐 دخول الإدارة</button>
-        </footer>
 
     </div>
 
-    <div id="login-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:10000; justify-content:center; align-items:center;">
-        <div style="background:white; padding:30px; border-radius:15px; width:300px; text-align:center;">
-            <h3 style="margin-top:0;">🔐 بوابة المشرف</h3>
-            <input type="password" id="admin-pass" placeholder="كلمة المرور السرية" style="width:100%; padding:10px; margin-bottom:15px; border:1px solid #ccc; border-radius:5px;">
-            <button onclick="if(document.getElementById('admin-pass').value==='12345'){localStorage.setItem('admin_token','SECRET_PASS_123'); window.location.href='admin.html';}else{alert('خطأ!');}" class="nav-btn active">دخول</button>
-            <button onclick="document.getElementById('login-modal').style.display='none'" style="margin-top:10px; background:none; border:none; color:red; cursor:pointer;">إغلاق</button>
+    <div onclick="openLoginModal()" style="position:fixed; bottom:20px; left:20px; width:40px; height:40px; background:#1e293b; color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:999;">🔒</div>
+    
+    <div id="login-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; justify-content:center; align-items:center;">
+        <div style="background:white; padding:20px; border-radius:10px; width:300px; text-align:center;">
+            <h3>دخول المشرف</h3>
+            <input type="password" id="admin-pass" placeholder="كلمة المرور" style="width:100%; padding:10px; margin-bottom:10px;">
+            <button onclick="if(document.getElementById('admin-pass').value==='12345'){localStorage.setItem('admin_token','SECRET_PASS_123'); window.location.href='admin.html';}else{alert('خطأ');}" style="padding:10px 20px; background:#047857; color:white; border:none; border-radius:5px; width:100%;">دخول</button>
+            <button onclick="document.getElementById('login-modal').style.display='none'" style="margin-top:10px; background:none; border:none; color:red;">إلغاء</button>
         </div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
-    
     <script src="js/config.js"></script>
-    
     <script src="js/main.js"></script>
-
+    
+    <script>
+        // دالة التنقل البسيطة (داخلية لسرعة الاستجابة)
+        function showSection(id) {
+            document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
+            document.getElementById('section-' + (id==='ranks'?'home':id)).classList.add('active'); // الأوائل في الرئيسية حالياً
+            document.getElementById('nav-menu').style.display = 'none';
+            window.scrollTo(0,0);
+        }
+    </script>
 </body>
 </html>
