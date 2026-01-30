@@ -1,0 +1,189 @@
+/* ============================================================
+   ملف: css/admin.css
+   الوظيفة: تصميم لوحة التحكم (admin.html) فقط
+   ============================================================ */
+
+/* --- 1. الهيكل العام للأدمن --- */
+body.admin-body {
+    margin: 0;
+    font-family: 'Cairo', sans-serif;
+    background-color: #f1f5f9; /* خلفية رمادية فاتحة */
+    display: flex;
+    height: 100vh; /* ملء الشاشة */
+    overflow: hidden; /* منع السكرول للصفحة كلها، السكرول يكون داخل المحتوى */
+}
+
+/* --- 2. القائمة الجانبية (Sidebar) --- */
+.sidebar {
+    width: 260px;
+    background-color: #1e293b; /* لون كحلي غامق */
+    color: white;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+    z-index: 100;
+}
+
+.brand {
+    padding: 20px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    background: rgba(0,0,0,0.2);
+    color: #34d399; /* لون الشعار الأخضر */
+}
+
+.menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex: 1;
+    overflow-y: auto; /* سكرول للقائمة إذا كانت طويلة */
+}
+
+.menu li a {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    color: #cbd5e1;
+    text-decoration: none;
+    transition: 0.2s;
+    border-right: 4px solid transparent;
+    cursor: pointer;
+    font-size: 0.95rem;
+}
+
+.menu li a:hover, 
+.menu li a.active {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    border-right-color: #10b981; /* الخط الأخضر عند التفعيل */
+}
+
+.menu li a i {
+    margin-left: 10px;
+    width: 20px;
+    text-align: center;
+}
+
+/* زر الخروج في الأسفل */
+.logout-btn {
+    color: #fca5a5 !important; /* لون أحمر فاتح */
+    border-top: 1px solid rgba(255,255,255,0.1);
+    margin-top: auto;
+}
+
+/* --- 3. منطقة المحتوى الرئيسي (Main Content) --- */
+.main {
+    flex: 1; /* يأخذ باقي المساحة */
+    padding: 25px;
+    overflow-y: auto; /* سكرول للمحتوى */
+    position: relative;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    background: white;
+    padding: 15px 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+}
+
+/* --- 4. البطاقات والنماذج (Forms & Cards) --- */
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    margin-bottom: 20px;
+    border: 1px solid #e2e8f0;
+}
+
+/* تلوين حواف البطاقات للتمييز */
+.border-green { border-right: 4px solid #10b981; }
+.border-blue { border-right: 4px solid #3b82f6; }
+.border-red { border-right: 4px solid #ef4444; }
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+}
+
+.form-group { margin-bottom: 15px; }
+
+label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+    color: #334155;
+    font-size: 0.9rem;
+}
+
+/* حقول الإدخال */
+.input-field, select, textarea {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    box-sizing: border-box; /* يمنع الحقل من الخروج عن البطاقة */
+    transition: 0.2s;
+}
+
+.input-field:focus {
+    border-color: #10b981;
+    outline: none;
+}
+
+/* --- 5. الأزرار (Buttons) --- */
+.btn {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: 0.2s;
+    font-size: 0.9rem;
+}
+
+.btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+.btn-primary { background: #3b82f6; } /* أزرق */
+.btn-success { background: #10b981; } /* أخضر للحفظ */
+.btn-danger { background: #ef4444; }  /* أحمر للحذف */
+.btn-warning { background: #f59e0b; color: white; } /* برتقالي للتعديل */
+
+/* --- 6. العناصر الديناميكية (القوائم) --- */
+.dynamic-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8fafc;
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 8px;
+}
+
+/* --- 7. أزرار التبديل (Toggle Switch) --- */
+.switch { position: relative; display: inline-block; width: 46px; height: 24px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+.slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+input:checked + .slider { background-color: #10b981; }
+input:checked + .slider:before { transform: translateX(22px); }
+
+/* --- 8. التبويبات (Tabs Logic) --- */
+.panel { display: none; animation: fadeIn 0.3s ease; }
+.panel.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
