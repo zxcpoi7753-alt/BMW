@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حلقات الثريا لتعليم القرآن الكريم</title>
+    
+    <link rel="icon" type="image/png" href="1768411699920.png">
+    <link rel="apple-touch-icon" href="1768411699920.png">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/darkmode.css">
+
+    <style>
+        /* --- 1. شاشة التحميل (منع الوميض) --- */
+        #site-loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff; z-index: 9999999; display: flex; justify-content: center; align-items: center; flex-direction: column; transition: opacity 0.5s ease; }
+        .spinner { border: 5px solid #f3f3f3; border-top: 5px solid #047857; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin-bottom: 20px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* --- 2. تنسيق الجداول (التصميم القديم: أزرار تفتح وتغلق) --- */
+        .time-group-title {
+            background: var(--bg-light); border-right: 5px solid var(--accent-color);
+            padding: 10px 15px; margin: 20px 0 10px 0; font-weight: bold; color: var(--primary-color);
+            border-radius: 5px; font-size: 1.1rem;
+        }
+        .ring-accordion-btn {
+            width: 100%; text-align: right; background: white; border: 1px solid #e2e8f0;
+            padding: 15px; margin-bottom: 5px; border-radius: 8px; cursor: pointer;
+            font-weight: bold; display: flex; justify-content: space-between; align-items: center;
+            transition: 0.2s; color: #334155;
+        }
+        .ring-accordion-btn:hover { background: #f8fafc; border-color: var(--accent-color); }
+        .ring-accordion-btn.active { background: var(--accent-color); color: white; border-color: var(--accent-color); }
+        .ring-schedule-panel {
+            display: none; padding: 10px; background: white; border: 1px solid #e2e8f0;
+            border-top: none; border-radius: 0 0 8px 8px; margin-bottom: 10px; animation: slideDown 0.3s ease;
+        }
+        .schedule-table-simple { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        .schedule-table-simple th, .schedule-table-simple td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+        .schedule-table-simple th { background: #f1f5f9; color: var(--primary-color); }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- 3. تنسيق المعلمين (القائمة النصية المدمجة) --- */
+        .teacher-row {
+            display: flex; align-items: center; gap: 10px; padding: 12px;
+            background: white; border-bottom: 1px solid #eee; transition: 0.2s;
+        }
+        .teacher-row:last-child { border-bottom: none; }
+        .teacher-icon { font-size: 1.2rem; color: var(--accent-color); background: #eff6ff; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+        .teacher-info h4 { margin: 0; font-size: 1rem; color: #333; }
+        .teacher-info p { margin: 2px 0 0 0; font-size: 0.85rem; color: gray; }
+
+        /* --- 4. تنسيق البطاقات المخصصة (الديناميكية) --- */
+        .custom-dynamic-card {
+            background: white; border-radius: 10px; padding: 15px; margin-bottom: 15px;
+            border: 1px solid #eee; border-right-width: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        .custom-dynamic-card h3 { margin-top: 0; margin-bottom: 10px; }
+        .custom-dynamic-card:active { transform: scale(0.98); }
+
+        /* --- 5. تنسيق الإشعار المنبثق --- */
+        .popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 20000; display: none; justify-content: center; align-items: center; }
+        .popup-content { background: white; padding: 30px; border-radius: 15px; max-width: 90%; width: 400px; text-align: center; border: 3px solid var(--accent-color); animation: popUp 0.4s ease; }
+        .dont-show-again { margin-top: 10px; font-size: 0.8rem; color: gray; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        
+        /* --- 6. وضع الصيانة --- */
+        #maintenance-mode { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #1e293b; color: white; z-index: 999999; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+
+    <div id="site-loader">
+        <div class="spinner"></div>
+        <h3 style="color:#047857; font-family:'Amiri';">جاري تجهيز حلقات الثريا...</h3>
+    </div>
+
+    <div id="maintenance-mode">
+        <h1 style="font-size: 3rem;">🚧</h1>
+        <h2>الموقع تحت الصيانة</h2>
+        <p>نقوم ببعض التحسينات، سنعود قريباً...</p>
+        <button onclick="openLoginModal()" style="margin-top:20px; background: transparent; border: 1px solid white; color: white; padding: 5px 15px; border-radius: 20px; cursor: pointer;">دخول المشرف</button>
+    </div>
+
+    <div id="site-notification" class="popup-overlay">
+        <div class="popup-content">
+            <h3 id="notif-title" style="color:var(--primary-color); margin-top:0;">📢 تنبيه هام</h3>
+            <p id="notif-body" style="font-size:1.1rem; line-height:1.6; color:#333;">...</p>
+            <button onclick="closePopup()" class="nav-btn active" style="margin-top:15px; width:100%;">حسناً، فهمت ✅</button>
+            <div class="dont-show-again" onclick="disablePopupForever()">
+                <input type="checkbox" id="popup-forever-check">
+                <span>لا تظهر هذه الرسالة مرة أخرى</span>
+            </div>
+        </div>
+    </div>
+    <div id="toast-container" class="toast-container"></div>
+
+    <header>
+        <button class="theme-circle-btn" onclick="toggleTheme()" id="theme-btn" title="تغيير المظهر">🌙</button>
+        
+        <div class="video-container">
+            <video id="bg-video" autoplay muted loop playsinline>
+                <source src="1768472913710.mp4" type="video/mp4">
+            </video>
+        </div>
+        
+        <h1 id="txt_header_title">حلقات الثريا</h1>
+        <p class="header-subtitle" id="txt_header_subtitle">لتعليم القرآن الكريم</p>
+        <p class="header-location" id="txt_header_location">حضرموت - غيل باوزير</p>
+        <div id="verse-display" class="verse-ticker"></div>
+    </header>
+
+    <div class="nav-container-wrapper">
+        <button class="nav-btn-home active" onclick="showSection('home')">🏠 الرئيسية</button>
+        <div class="nav-expand-btn" onclick="toggleNavMenu()">
+            <span>بقية الأقسام</span>
+            <span id="nav-arrow" class="arrow-icon">▼</span>
+        </div>
+        <div id="nav-menu-grid" class="nav-grid hidden"></div>
+    </div>
+
+    <div class="container">
+        
+        <div id="section-home" class="page-section active">
+            
+            <div id="dynamic-custom-cards-container"></div>
+
+            <div id="block-news" style="display:none;">
+                <h2 style="color:var(--primary-color)" id="txt_news_title">📢 آخر الأخبار</h2>
+                <div class="news-ticker" style="background: #f1f5f9; padding: 10px; border-bottom: 2px solid var(--primary-color); border-radius: 8px; margin-bottom: 20px;">
+                    <marquee id="dynamic-news-bar" direction="right" scrollamount="6" style="font-weight: bold; color: #333; font-size: 1.1rem;">
+                        ⏳ جاري التحميل...
+                    </marquee>
+                </div>
+            </div>
+
+            <div id="block-student" style="display:none;">
+                <div class="card" style="background: linear-gradient(135deg, #fffbeb 0%, #fff 100%); border: 1px solid #fcd34d;">
+                    <div style="text-align:center;">
+                        <span style="font-size:2rem;">👑</span>
+                        <h3 style="margin:5px 0; color:#d97706;" id="txt_student_title">نجم الأسبوع</h3>
+                        <h2 id="top-student-name" style="margin: 10px 0; color: var(--primary-color); font-size: 1.5rem;">...</h2>
+                        <p id="top-student-desc" style="color: gray; font-size: 0.9rem;">...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="block-question" style="display:none;">
+                <h2 style="color:var(--primary-color); margin-top:25px;" id="txt_question_title">❓ السؤال الأسبوعي</h2>
+                <div class="card" style="border-right: 4px solid var(--accent-color);">
+                <h3 id="weekly-question-text" style="color:var(--primary-color); margin-top:0;">...</h3>
+                    <div style="background: rgba(251, 191, 36, 0.1); padding: 10px; border-radius: 8px; margin-top:10px;">
+                        <strong>🏆 الفائز السابق:</strong> 
+                        <span id="weekly-winner-text" style="color: var(--primary-color); font-weight:bold;">...</span>
+                    </div>
+                    <button class="nav-btn" style="width:100%; margin-top:15px; border-color:#25D366; color:#25D366; display:flex; align-items:center; justify-content:center; gap:5px;" onclick="sendAnswerViaWhatsapp()">
+                        <span>💬 أرسل الإجابة (واتساب)</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="section-student" class="page-section">
+            <h2 style="color:var(--primary-color)">📖 ركن الطالب</h2>
+            <p style="text-align:center; color:gray; margin-bottom:20px;">أدوات ذكية لمساعدتك في رحلة القرآن</p>
+
+            <button class="accordion-btn" onclick="loadAzkarCategories()">📿 الأذكار والسبحة الإلكترونية <span>▼</span></button>
+            <div id="azkar-app-container" class="accordion-panel">
+                <div style="padding: 15px 0;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; background:var(--bg-light); padding:10px; border-radius:8px; border:1px dashed var(--border-color);">
+                        <label style="font-size:0.9rem;">🔄 تصفير العدادات:</label>
+                        <select id="reset-period-select" onchange="saveResetSetting()" style="padding:5px; border-radius:5px; border:1px solid var(--border-color);">
+                            <option value="24">كل 24 ساعة (يومياً)</option>
+                            <option value="12">كل 12 ساعة</option>
+                            <option value="manual">يدوياً فقط</option>
+                        </select>
+                    </div>
+                    <div id="azkar-categories-grid" class="button-grid"></div>
+                    <div id="azkar-list-container" style="display:none; margin-top:15px;">
+                        <div style="display:flex; gap:10px; margin-bottom:15px;">
+                            <button class="nav-btn" onclick="backToAzkarCategories()" style="flex:1;">🔙 عودة</button>
+                            <button class="nav-btn" onclick="resetCategoryCounters()" style="flex:1; border-color:#ef4444; color:#ef4444;">🔄 تصفير القسم</button>
+                        </div>
+                        <h3 id="azkar-category-title" style="color:var(--primary-color); text-align:center; margin-top:0;"></h3>
+                        <div id="azkar-items-list"></div>
+                    </div>
+                    <div id="subha-interface" style="display:none; margin-top:10px;">
+                        <div style="display:flex; gap:10px; align-items:stretch; margin-bottom:10px;">
+                            <button class="nav-btn" onclick="backToAzkarCategories()" style="padding:0 15px; font-size:1.2rem;">🔙</button>
+                            <div class="card" style="flex:1; margin:0; padding:10px 15px; display:flex; justify-content:space-between; align-items:center; border:2px solid var(--primary-color);">
+                                <div style="text-align:right;">
+                                    <div id="main-tasbeeh-counter" style="font-size:2.2rem; font-weight:bold; color:var(--accent-color); line-height:1;">0</div>
+                                </div>
+                                <div style="display:flex; flex-direction:column; gap:5px;">
+                                    <button class="nav-btn" onclick="subhaAction('undo')" style="padding:2px 8px; font-size:0.75rem; border-color:#f59e0b; color:#f59e0b; min-height:auto;">تراجع</button>
+                                    <button class="nav-btn" onclick="subhaAction('reset')" style="padding:2px 8px; font-size:0.75rem; border-color:#ef4444; color:#ef4444; min-height:auto;">تصفير</button>
+                                </div>
+                            </div>
+                        </div>
+                        <p id="current-tasbeeh-label" style="text-align:center; font-weight:bold; color:var(--primary-color); margin:5px 0; font-size:1rem;">سبحان الله</p>
+                        <div class="button-grid" style="grid-template-columns: repeat(3, 1fr); gap:5px; margin-bottom:10px;">
+                            <button class="calc-btn-option tasbeeh-btn-small" onclick="setTasbeeh('سبحان الله')">سبحان الله</button>
+                            <button class="calc-btn-option tasbeeh-btn-small" onclick="setTasbeeh('الحمد لله')">الحمد لله</button>
+                            <button class="calc-btn-option tasbeeh-btn-small" onclick="setTasbeeh('الله أكبر')">الله أكبر</button>
+                            <button class="calc-btn-option tasbeeh-btn-small" onclick="setTasbeeh('لا إله إلا الله')">لا إله إلا الله</button>
+                            <button class="calc-btn-option tasbeeh-btn-small" onclick="setTasbeeh('أستغفر الله')">أستغفر الله</button>
+                            <button class="calc-btn-option tasbeeh-btn-small" onclick="setTasbeeh('الصلاة على النبي')">الصلاة على النبي</button>
+                        </div>
+                        <button id="big-tap-btn" class="nav-btn active" style="width:100%; height:100px; font-size:1.5rem; border-radius:15px; box-shadow:0 5px 15px rgba(4, 120, 87, 0.3); display:flex; align-items:center; justify-content:center; gap:10px;" onclick="subhaAction('count')">
+                            <span>اضغط للعد</span> 👆
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top:15px; border-right:4px solid #8b5cf6;">
+                <h3 style="margin-top:0;">⏰ منبه الحفظ الذكي</h3>
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <input type="time" id="alarm-time" class="form-input">
+                    <button class="nav-btn active" onclick="setStudyAlarm()">🔔 ضبط</button>
+                </div>
+            </div>
+            
+            <button class="accordion-btn">🚀 خطة ختمي (بناءً على جهدي) <span>▼</span></button>
+            <div class="accordion-panel">
+                <div style="padding: 15px 0;">
+                    <div id="calc-step-1"><p><strong>1️⃣ كم يوماً تحفظ في الأسبوع؟</strong></p><div id="days-buttons-container" class="button-grid"></div></div>
+                    <div id="calc-step-2" style="display:none;"><p><strong>2️⃣ كم مقدار الحفظ اليومي؟</strong></p><div id="amount-buttons-container" class="button-grid"></div><div id="custom-amount-div" style="display:none; margin-top:10px;"><input type="number" id="custom-pages" class="form-input" placeholder="اكتب عدد الصفحات"><button class="nav-btn" style="margin-top:10px; width:100%" onclick="calculatePlan(document.getElementById('custom-pages').value)">احسب</button></div></div>
+                    <div id="calc-result" class="calc-result"></div>
+                    <button id="reset-calc" class="nav-btn" style="display:none; margin-top:10px; width:100%; border-color:#ef4444; color:#ef4444;" onclick="resetCalc()">حساب جديد 🔄</button>
+                </div>
+            </div>
+
+            <button class="accordion-btn">🧭 دليل الختم (بناءً على وقتي) <span>▼</span></button>
+            <div class="accordion-panel">
+                <div style="padding: 15px 0;">
+                    <div class="radio-group"><label class="radio-label"><input type="radio" name="planType" value="حفظ" checked> 🧠 خطة حفظ</label><label class="radio-label"><input type="radio" name="planType" value="قراءة"> 📖 خطة قراءة</label></div>
+                    <div class="calc-input-group"><label>🗓️ الختم بالأيام:</label><select id="target-days" class="form-select"></select></div>
+                    <div class="calc-input-group"><label>📅 الختم بالأشهر:</label><select id="target-months" class="form-select"></select></div>
+                    <div class="calc-input-group"><label>📆 الختم بالسنوات:</label><select id="target-years" class="form-select"></select></div>
+                    <button class="nav-btn active" style="width:100%; padding:15px;" onclick="calculateReversePlan()">✨ احسب خطتي</button>
+                    <div id="reverse-calc-result" class="calc-result"></div>
+                </div>
+            </div>
+
+            <button class="accordion-btn">🧠 اختبر حفظك (نظام ذكي) <span>▼</span></button>
+            <div class="accordion-panel">
+                <div style="padding: 15px 0;">
+                    <div id="quiz-controls">
+                        <div class="calc-input-group"><label>نطاق الاختبار:</label><select id="quiz-juz" class="form-select" onchange="updateQuizSurahs()"></select></div>
+                        <div class="calc-input-group"><label>السورة:</label><select id="quiz-surah" class="form-select"></select></div>
+                        <div class="calc-input-group"><label>نوع السؤال:</label><select id="quiz-type" class="form-select"><option value="complete">أكمل الآية</option><option value="prev_ayah">الآية السابقة</option><option value="next_ayah">الآية التالية</option><option value="ayah_num">رقم الآية</option><option value="page_num">رقم الصفحة</option><option value="surah_name">اسم السورة</option></select></div>
+                        <button class="nav-btn active" style="width:100%;" onclick="startQuiz()">🚀 ابدأ</button>
+                    </div>
+                    <div id="quiz-area" class="card" style="display:none; margin-top:15px; border:2px dashed var(--primary-color);">
+                        <p id="question-text" style="font-size:1.3rem; margin-bottom:20px; line-height:1.8;"></p>
+                        <button id="show-answer-btn" class="nav-btn" onclick="showAnswer()">إظهار الإجابة 👀</button>
+                        <div id="answer-box" style="display:none; background:rgba(4, 120, 87, 0.05); padding:15px; border-radius:8px; margin-top:10px;">
+                            <p id="answer-text" style="font-weight:bold; font-size:1.2rem; color:var(--primary-color); margin-bottom:10px;"></p>
+                            <small id="answer-details" style="color:gray; display:block; margin-top:5px; border-top:1px solid #eee; padding-top:5px;"></small>
+                            <div class="quiz-actions" style="margin-top:15px; display:flex; gap:10px;">
+                                <button class="nav-btn" onclick="nextQuestionSameType()" style="flex:1;">التالي ➡️</button>
+                                <button class="nav-btn" onclick="resetQuiz()" style="flex:1; border-color:gray; color:gray;">إنهاء ❌</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="accordion-btn" onclick="openQuranApp()">📖 الختمة (المصحف الشريف) <span>▼</span></button>
+            <div id="quran-app-container" class="accordion-panel" style="background: var(--bg-light);">
+                <div style="padding: 15px 0;">
+                    <div class="quran-header-controls"><input type="text" id="quran-search" class="form-input" placeholder="🔍 ابحث عن سورة..." onkeyup="filterSurahs()"><button class="nav-btn" onclick="goToBookmark()" style="font-size:0.9rem;">🔖 استكمل</button></div>
+                    <div id="surah-grid" class="surah-grid-container"></div>
+                    <div id="reading-area" style="display:none;">
+                        <div class="reading-header"><button onclick="closeReading()" class="nav-btn" style="border:none;">🔙</button><h3 id="current-surah-title" style="margin:0; color:var(--primary-color); font-size:1rem;"></h3><div style="display:flex; gap:5px;"><button class="font-control-btn" onclick="changeFontSize(1)">A+</button><button class="font-control-btn" onclick="changeFontSize(-1)">A-</button></div></div>
+                        <div id="bookmark-tip" style="text-align:center; font-size:0.8rem; color:gray; margin-bottom:5px; display:none;">💡 اضغط على العلامة <span style="color:var(--accent-color)">🔖</span> بجانب الآية لحفظ مكانك</div>
+                        <div id="quran-text-display" class="quran-text-content"></div>
+                        <button class="nav-btn" style="width:100%; margin-top:30px; border-color:#d97706; color:#d97706;" onclick="showDuaa()">🤲 دعاء الختم</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="section-ranks" class="page-section">
+            <div id="block-ranks" style="display:none;">
+                <h2 style="color:var(--primary-color)">🏆 أوائل الحلقات</h2>
+                <div id="dynamic-ranks-list">
+                    </div>
+            </div>
+        </div>
+
+        <div id="section-schedule" class="page-section">
+            <div id="block-schedule" style="display:none;">
+                <h2 style="color:var(--primary-color)" id="txt_schedule_title">📅 الجداول الدراسية</h2>
+                
+                <div id="dynamic-schedule-container">
+                    <p style="text-align:center; color:gray;">جاري تحميل الجداول...</p>
+                </div>
+                
+                <h2 style="color:#ef4444; margin-top:25px;">🏖️ الإجازات</h2>
+                <div class="card" style="border-right-color: #ef4444;">
+                    <ul id="dynamic-holidays-list" style="margin:0; padding-right:20px;">
+                        <li>جاري التحميل...</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="section-teachers" class="page-section">
+            <div id="block-teachers" style="display:none;">
+                <h2 style="color:var(--primary-color)" id="txt_teachers_title">👨‍🏫 المعلمون</h2>
+                <div id="dynamic-teachers-container">
+                    <p style="text-align:center; color:gray;">جاري تحميل المعلمين...</p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="section-myname" class="page-section">
+            <h2 style="color:var(--primary-color)">🏷️ بطاقتي</h2>
+            <div class="card">
+                <p>سجل اسمك ليظهر في الموقع والرسائل.</p>
+                <div class="calc-input-group" style="margin-top:15px;">
+                    <label>الاسم الكريم:</label>
+                    <input type="text" id="student-name-input" class="form-input" placeholder="اسمك الثلاثي..." maxlength="30">
+                </div>
+                <div class="calc-input-group" style="margin-top:10px;">
+                    <label>اسم حلقتك:</label>
+                    <select id="student-ring-select" class="form-select">
+                        <option value="">اختر حلقتك...</option>
+                        <option value="حلقة أبو بكر الصديق">حلقة أبو بكر الصديق</option>
+                        <option value="حلقة عمر بن الخطاب">حلقة عمر بن الخطاب</option>
+                        <option value="حلقة عثمان بن عفان">حلقة عثمان بن عفان</option>
+                        <option value="حلقة علي بن أبي طالب">حلقة علي بن أبي طالب</option>
+                        <option value="حلقة زيد بن ثابت">حلقة زيد بن ثابت</option>
+                        <option value="غير محدد">غير ذلك</option>
+                    </select>
+                </div>
+                <button class="nav-btn active" style="width:100%; margin-top:10px; padding:12px;" onclick="saveStudentName()">حفظ البيانات 💾</button>
+                <button class="nav-btn" style="width:100%; margin-top:10px; padding:12px; border-color:#ef4444; color:#ef4444;" onclick="deleteStudentName()">حذف 🗑️</button>
+                <div id="name-save-result" class="calc-result"></div>
+            </div>
+        </div>
+        <div id="section-about" class="page-section">
+            <h2 style="color:var(--primary-color)" id="txt_about_title">🕌 من نحن</h2>
+            
+            <div class="card poetic-text" id="txt_about_content">
+                نحن حلقات الثريا لتحفيظ القرآن الكريم...
+            </div>
+            
+            <h2 style="color:var(--primary-color)" id="txt_contact_title">📞 تواصل معنا</h2>
+            <div class="contact-grid">
+                <a href="https://wa.me/967777006546" target="_blank" class="contact-box bg-whatsapp"><span class="contact-icon">💬</span><span>واتساب</span></a>
+                <a href="https://www.instagram.com/pb8.c?igsh=MWJ3YWNobGk1NmdtZQ==" target="_blank" class="contact-box bg-insta"><span class="contact-icon">📸</span><span>انستقرام</span></a>
+                <a href="tel:+967777006546" class="contact-box bg-call"><span class="contact-icon">📞</span><span>اتصال</span></a>
+                <a href="https://maps.app.goo.gl/dRRYPVJyqh2NKMg86" target="_blank" class="contact-box bg-map"><span class="contact-icon">📍</span><span>الموقع</span></a>
+            </div>
+        </div>
+
+        <div id="section-mobile" class="page-section">
+            <h2 style="color:var(--primary-color)">📱 التطبيق</h2>
+            <div class="card">قريباً بإذن الله...</div>
+        </div>
+
+    </div> <footer id="txt_footer">جميع الحقوق محفوظة © 2026</footer>
+
+    <script src="js/data.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/calculator.js"></script>
+    <script src="js/quiz.js"></script>
+    <script src="js/quran_app.js"></script>
+    <script src="js/azkar.js"></script>
+    <script src="js/logic.js"></script>
+
+    <button onclick="openLoginModal()" style="position: fixed; bottom: 20px; left: 20px; background: #1e293b; color: white; border: 2px solid var(--primary-color); border-radius: 50%; width: 50px; height: 50px; font-size: 22px; cursor: pointer; z-index: 999999; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">🔒</button>
+
+    <div id="login-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000000; justify-content: center; align-items: center; backdrop-filter: blur(5px);">
+        <div style="background: white; padding: 30px; border-radius: 15px; width: 300px; text-align: center; border: 2px solid var(--primary-color);">
+            <h3 style="margin-top:0; color:#1e293b;">🔐 بوابة الإدارة</h3>
+            <input type="text" id="admin-user" placeholder="اسم المستخدم" style="width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 8px; text-align:center;">
+            <input type="password" id="admin-pass" placeholder="كلمة المرور" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px; text-align:center;">
+            <button onclick="secureLogin()" style="width: 100%; padding: 12px; background: var(--primary-color); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight:bold;">دخول آمن 🚀</button>
+            <button onclick="document.getElementById('login-modal').style.display='none'" style="margin-top: 15px; background: none; border: none; color: #ef4444; cursor: pointer; text-decoration: underline;">إلغاء</button>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+          apiKey: "AIzaSyBm8ML-1EKvQT76FJlzIQf4sn4M-MHhiRk",
+          authDomain: "quran-app-93e24.firebaseapp.com",
+          projectId: "quran-app-93e24",
+          storageBucket: "quran-app-93e24.firebasestorage.app",
+          messagingSenderId: "82150677933",
+          appId: "1:82150677933:web:64213e04463c1bb3179524"
+        };
+        try {
+            firebase.initializeApp(firebaseConfig);
+            const db = firebase.database();
+
+            // الاستماع للبيانات (Realtime)
+            db.ref().on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    // 1. تطبيق الإعدادات (صيانة، فيديو، إخفاء أقسام)
+                    applySettings(data);
+                    
+                    // 2. تطبيق المحتوى والنصوص
+                    applyContent(data);
+                    
+                    // 3. بناء الأقسام الديناميكية المعقدة
+                    renderComplexSchedule(data.schedule_complex); // الجداول القديمة
+                    renderTeachers(data.teachers_list_v2);        // المعلمون (نص)
+                    renderCustomCards(data.custom_cards);         // الأزرار الإضافية
+                    renderRanks(data.ranks_list);                 // أوائل الحلقات
+                    renderHolidays(data.holidays_list);           // الإجازات
+
+                    // 4. ✅ إخفاء شاشة التحميل (Anti-Flicker)
+                    setTimeout(() => {
+                        const loader = document.getElementById('site-loader');
+                        if(loader) {
+                            loader.style.opacity = '0';
+                            setTimeout(() => loader.style.display = 'none', 500);
+                        }
+                    }, 800);
+                }
+            });
+
+        } catch (error) { console.error(error); }
+
+        // --- دوال التطبيق ---
+
+        function applySettings(data) {
+            if(!data.settings) return;
+            const s = data.settings;
+
+            // أ. وضع الصيانة
+            const maint = document.getElementById('maintenance-mode');
+            if(s.maintenance_mode === true) {
+                maint.style.display = 'flex';
+                document.querySelector('.container').style.display = 'none';
+                document.querySelector('header').style.display = 'none';
+            } else {
+                maint.style.display = 'none';
+                document.querySelector('.container').style.display = 'block';
+                document.querySelector('header').style.display = 'block';
+            }
+
+            // ب. الإشعار المنبثق (الذكية)
+            const popup = document.getElementById('site-notification');
+            const dontShow = localStorage.getItem('dont_show_popup');
+            
+            // يظهر فقط إذا: (مفعل من الأدمن) + (المستخدم لم يختر "عدم الإظهار")
+            if(s.popup_active === true && dontShow !== 'true') {
+                popup.style.display = 'flex';
+                document.getElementById('notif-title').innerText = s.popup_title || "تنبيه";
+                document.getElementById('notif-body').innerText = s.popup_body || "...";
+            } else {
+                popup.style.display = 'none';
+            }
+
+            // ج. إخفاء/إظهار الأقسام الرئيسية
+            toggleSection('block-news', s.show_news);
+            toggleSection('block-student', s.show_student);
+            toggleSection('block-question', s.show_question);
+            toggleSection('block-teachers', s.show_teachers);
+            toggleSection('block-schedule', s.show_schedule);
+            toggleSection('block-ranks', s.show_ranks); // قسم الأوائل الجديد
+
+            // د. الفيديو
+            if(s.video_url) {
+                const vid = document.getElementById('bg-video');
+                if(!vid.src.includes(s.video_url)) vid.src = s.video_url;
+            }
+        }
+
+        function applyContent(data) {
+            // شريط الأخبار والسؤال
+            if(data.news_bar) setTxt('dynamic-news-bar', data.news_bar.text);
+            if(data.weekly_question) {
+                setHTML('weekly-question-text', `<strong>سؤال الأسبوع:</strong> ${data.weekly_question.text}`);
+                setTxt('weekly-winner-text', data.weekly_question.last_winner);
+            }
+            if(data.top_student) {
+                setTxt('top-student-name', data.top_student.name);
+                setTxt('top-student-desc', data.top_student.category);
+            }
+            
+            // نصوص الموقع (من نحن، الهيدر، الفوتر)
+            if(data.site_content) {
+                const c = data.site_content;
+                setTxt('txt_header_title', c.txt_header_title);
+                setTxt('txt_header_subtitle', c.txt_header_subtitle);
+                setTxt('txt_header_location', c.txt_header_location);
+                setTxt('txt_news_title', c.txt_news_title);
+                setTxt('txt_student_title', c.txt_student_title);
+                setTxt('txt_question_title', c.txt_question_title);
+                setTxt('txt_about_title', c.txt_about_title);
+                // هنا نستخدم setHTML ليحافظ على تنسيق الأبيات الشعرية
+                setHTML('txt_about_content', c.txt_about_content); 
+                setTxt('txt_contact_title', c.txt_contact_title);
+                setTxt('txt_footer', c.txt_footer);
+                if(c.txt_schedule_title) setTxt('txt_schedule_title', c.txt_schedule_title);
+                if(c.txt_teachers_title) setTxt('txt_teachers_title', c.txt_teachers_title);
+            }
+        }
+        // --- 5. دوال بناء المحتوى المعقد (Core Logic) ---
+
+        // أ. بناء البطاقات المخصصة (الديناميكية)
+        // هذه الدالة تبني الأزرار التي تضيفها أنت من الأدمن (تكريم، دورات، إعلانات)
+        function renderCustomCards(list) {
+            const container = document.getElementById('dynamic-custom-cards-container');
+            if(!container) return;
+            container.innerHTML = ''; // مسح القديم
+
+            if(!list) return;
+
+            Object.values(list).forEach(card => {
+                // إذا قمت بإخفاء البطاقة من الأدمن، لا نعرضها
+                if(card.active === false) return;
+
+                const div = document.createElement('div');
+                div.className = 'custom-dynamic-card';
+                // تلوين الحدود حسب اللون الذي اخترته في الأدمن
+                div.style.borderRightColor = card.color || '#3b82f6';
+                
+                let html = `<h3 style="color:${card.color || '#333'}">${card.title}</h3>`;
+                html += `<p style="white-space: pre-line;">${card.text}</p>`; // pre-line للحفاظ على الأسطر الجديدة
+                
+                // إذا أضفت رابطاً للزر
+                if(card.link) {
+                    html += `<a href="${card.link}" target="_blank" class="nav-btn" style="margin-top:10px; border-color:${card.color}; color:${card.color}; width:auto; display:inline-block;">${card.btn_text || 'اضغط هنا'}</a>`;
+                }
+
+                div.innerHTML = html;
+                container.appendChild(div);
+            });
+        }
+
+        // ب. بناء الجدول المعقد (التصميم القديم: عصر/مغرب + أزرار)
+        function renderComplexSchedule(data) {
+            const container = document.getElementById('dynamic-schedule-container');
+            if(!container) return;
+            container.innerHTML = '';
+
+            if(!data) { container.innerHTML = '<p style="text-align:center;">لا توجد جداول حالياً</p>'; return; }
+
+            // الترتيب لضمان ظهور العصر قبل المغرب (ترتيب أبجدي للمفاتيح: time_1, time_2)
+            Object.keys(data).sort().forEach(timeKey => {
+                const timeSection = data[timeKey];
+                if(!timeSection.rings) return;
+
+                // 1. عنوان الوقت (مثلاً: حلقات العصر) - بالتصميم القديم
+                const timeHeader = document.createElement('div');
+                timeHeader.className = 'time-group-title';
+                timeHeader.innerText = timeSection.title || "فترة";
+                container.appendChild(timeHeader);
+
+                // 2. الحلقات داخل هذا الوقت (أزرار قابلة للفتح)
+                Object.values(timeSection.rings).forEach(ring => {
+                    // الزر (Accordion)
+                    const btn = document.createElement('div');
+                    btn.className = 'ring-accordion-btn';
+                    btn.innerHTML = `<span>📖 ${ring.name}</span> <span>▼</span>`;
+                    
+                    // اللوحة (Panel) المخفية التي تحتوي على الجدول
+                    const panel = document.createElement('div');
+                    panel.className = 'ring-schedule-panel';
+                    
+                    // رسم جدول الأسبوع (السبت -> الخميس)
+                    let tableHTML = `
+                        <table class="schedule-table-simple">
+                            <thead><tr><th>اليوم</th><th>المقرر / النشاط</th></tr></thead>
+                            <tbody>
+                                <tr><td>السبت</td><td>${ring.sat || '-'}</td></tr>
+                                <tr><td>الأحد</td><td>${ring.sun || '-'}</td></tr>
+                                <tr><td>الاثنين</td><td>${ring.mon || '-'}</td></tr>
+                                <tr><td>الثلاثاء</td><td>${ring.tue || '-'}</td></tr>
+                                <tr><td>الأربعاء</td><td>${ring.wed || '-'}</td></tr>
+                                <tr><td>الخميس</td><td>${ring.thu || '-'}</td></tr>
+                            </tbody>
+                        </table>
+                    `;
+                    panel.innerHTML = tableHTML;
+
+                    // برمجة الزر للفتح والإغلاق عند الضغط
+                    btn.onclick = function() {
+                        this.classList.toggle('active');
+                        if (panel.style.display === "block") {
+                            panel.style.display = "none";
+                            this.querySelector('span:last-child').innerText = '▼';
+                        } else {
+                            panel.style.display = "block";
+                            this.querySelector('span:last-child').innerText = '▲';
+                        }
+                    };
+
+                    container.appendChild(btn);
+                    container.appendChild(panel);
+                });
+            });
+        }
+
+        // ج. بناء قائمة المعلمين (التصميم النصي الجديد)
+        function renderTeachers(list) {
+            const container = document.getElementById('dynamic-teachers-container');
+            if(!container) return;
+            container.innerHTML = '';
+            
+            if(!list) { container.innerHTML = '<p>لا يوجد معلمون حالياً</p>'; return; }
+
+            Object.values(list).forEach(t => {
+                const div = document.createElement('div');
+                div.className = 'teacher-row'; // استدعاء تصميم CSS الجديد
+                
+                div.innerHTML = `
+                    <div class="teacher-icon"><i class="fas fa-user-tie"></i></div>
+                    <div class="teacher-info">
+                        <h4>${t.name}</h4>
+                        <p>${t.role || 'معلم فاضل'}</p>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // د. بناء قائمة الأوائل
+        function renderRanks(list) {
+            const container = document.getElementById('dynamic-ranks-list');
+            if(!container) return;
+            container.innerHTML = '';
+            
+            if(!list) { container.innerHTML = '<p>لم يتم رفع الأسماء بعد</p>'; return; }
+
+            // إنشاء جدول أنيق للأوائل
+            let html = '<table class="schedule-table-simple" style="width:100%"><thead><tr><th>المركز</th><th>الطالب</th><th>الحلقة</th></tr></thead><tbody>';
+            Object.values(list).forEach(r => {
+                let medal = '';
+                if(r.rank == 1) medal = '🥇';
+                else if(r.rank == 2) medal = '🥈';
+                else if(r.rank == 3) medal = '🥉';
+                
+                html += `<tr>
+                    <td>${medal} ${r.rank}</td>
+                    <td><strong>${r.name}</strong></td>
+                    <td>${r.ring}</td>
+                </tr>`;
+            });
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        // هـ. بناء قائمة الإجازات
+        function renderHolidays(list) {
+            const ul = document.getElementById('dynamic-holidays-list');
+            if(!ul) return;
+            ul.innerHTML = '';
+            if(!list) { ul.innerHTML = '<li>لا توجد إجازات قريبة</li>'; return; }
+            
+            Object.values(list).forEach(h => {
+                const li = document.createElement('li');
+                li.innerText = h.text;
+                ul.appendChild(li);
+            });
+        }
+        // --- 6. دوال مساعدة (Helpers) ---
+
+        function setTxt(id, txt) { const el = document.getElementById(id); if(el && txt) el.innerText = txt; }
+        
+        // نستخدم innerHTML هنا بحذر (فقط للنصوص التي تحتاج تنسيق مثل الأبيات الشعرية)
+        function setHTML(id, txt) { const el = document.getElementById(id); if(el && txt) el.innerHTML = txt; }
+
+        function toggleSection(id, show) {
+            const el = document.getElementById(id);
+            // إذا كان show == true نعرضه، غير ذلك نخفيه
+            // ملاحظة: الأقسام تبدأ مخفية (display:none) لمنع الوميض
+            if(el) {
+                if(show === true) el.style.display = 'block';
+                else el.style.display = 'none';
+            }
+        }
+
+        // --- 7. برمجة الإشعار المنبثق ---
+
+        function closePopup() {
+            document.getElementById('site-notification').style.display = 'none';
+        }
+
+        function disablePopupForever() {
+            const checkbox = document.getElementById('popup-forever-check');
+            if(checkbox.checked) {
+                // حفظ الخيار في ذاكرة المتصفح
+                localStorage.setItem('dont_show_popup', 'true');
+                alert("تم! لن تظهر لك هذه الرسالة مرة أخرى في هذا الجهاز.");
+                closePopup();
+            }
+        }
+
+        // --- 8. برمجة تسجيل الدخول (Admin) ---
+
+        function openLoginModal() { document.getElementById('login-modal').style.display = 'flex'; }
+        
+        function secureLogin() {
+            const u = document.getElementById('admin-user').value;
+            const p = document.getElementById('admin-pass').value;
+            const db = firebase.database();
+            
+            // التحقق من قاعدة البيانات
+            db.ref('admin_account').once('value').then(snap => {
+                const creds = snap.val();
+                let realU = "admin", realP = "12345"; // القيم الافتراضية
+                
+                if(creds) { 
+                    realU = creds.username; 
+                    realP = creds.password; 
+                }
+                
+                // مقارنة المدخلات
+                if(u === realU && p === realP) {
+                    // نجاح الدخول
+                    localStorage.setItem('admin_token', 'SECRET_PASS_123');
+                    window.location.href = "admin.html"; // التوجيه لصفحة الأدمن
+                } else {
+                    alert("⛔ خطأ في اسم المستخدم أو كلمة المرور");
+                }
+            }).catch(error => {
+                console.error(error);
+                alert("حدث خطأ في الاتصال، تأكد من الإنترنت.");
+            });
+        }
+
+    </script>
+</body>
+</html>
