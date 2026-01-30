@@ -249,22 +249,32 @@ function renderRanks(list) {
     
     if(!list) { container.innerHTML = '<p>سيتم الإعلان قريباً.</p>'; return; }
 
-    let html = '<table class="schedule-table-simple"><thead><tr><th>المركز</th><th>الطالب</th><th>الحلقة</th></tr></thead><tbody>';
+    // تصميم الجدول الأخضر (V3)
+    let html = `
+    <table class="ranks-table">
+        <thead>
+            <tr>
+                <th style="background:#047857; color:white;">المركز</th>
+                <th style="background:#047857; color:white;">الطالب</th>
+                <th style="background:#047857; color:white;">الحلقة</th>
+            </tr>
+        </thead>
+        <tbody>`;
     
-    // ترتيب الأوائل حسب المركز
     const sorted = Object.values(list).sort((a,b) => a.rank - b.rank);
     const medals = {1:'🥇', 2:'🥈', 3:'🥉'};
 
     sorted.forEach(r => {
         html += `<tr>
             <td>${medals[r.rank] || '#'+r.rank}</td>
-            <td><strong>${r.name}</strong></td>
-            <td>${r.ring}</td>
+            <td style="font-weight:bold;">${r.name}</td>
+            <td style="font-size:0.9rem; color:#666;">${r.ring}</td>
         </tr>`;
     });
     html += '</tbody></table>';
     container.innerHTML = html;
 }
+
 
 // هـ. رسم الإجازات
 function renderHolidays(list) {
@@ -306,36 +316,4 @@ function toggleTheme() {
 
 function openLoginModal() {
     document.getElementById('login-modal').style.display = 'flex';
-}
-function renderRanks(list) {
-    const container = document.getElementById('dynamic-ranks-list');
-    if(!container) return;
-    container.innerHTML = '';
-    
-    if(!list) { container.innerHTML = '<p>سيتم الإعلان قريباً.</p>'; return; }
-
-    // تصميم الجدول الأخضر (V3)
-    let html = `
-    <table class="ranks-table">
-        <thead>
-            <tr>
-                <th style="background:#047857; color:white;">المركز</th>
-                <th style="background:#047857; color:white;">الطالب</th>
-                <th style="background:#047857; color:white;">الحلقة</th>
-            </tr>
-        </thead>
-        <tbody>`;
-    
-    const sorted = Object.values(list).sort((a,b) => a.rank - b.rank);
-    const medals = {1:'🥇', 2:'🥈', 3:'🥉'};
-
-    sorted.forEach(r => {
-        html += `<tr>
-            <td>${medals[r.rank] || '#'+r.rank}</td>
-            <td style="font-weight:bold;">${r.name}</td>
-            <td style="font-size:0.9rem; color:#666;">${r.ring}</td>
-        </tr>`;
-    });
-    html += '</tbody></table>';
-    container.innerHTML = html;
 }
