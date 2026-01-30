@@ -1,319 +1,201 @@
-// ============================================================
-// ملف: js/main.js
-// الوظيفة: جلب البيانات وعرضها في الموقع (index.html)
-// ============================================================
+/* ============================================================
+   ملف: css/main.css (نسخة V3 الأصلية - طبق الأصل)
+   ============================================================ */
 
-// 1. نظام التحميل الذكي (Instant Load)
-// نحاول عرض البيانات من الذاكرة فوراً قبل اتصال النت
-document.addEventListener('DOMContentLoaded', () => {
-    const cachedData = localStorage.getItem('site_cache_v3');
-    if (cachedData) {
-        console.log("Loading from cache...");
-        processData(JSON.parse(cachedData));
-    }
-});
-
-// 2. الاستماع للبيانات الحية من فايربيس
-db.ref().on('value', (snapshot) => {
-    const data = snapshot.val();
-    if (data) {
-        console.log("New data received from Firebase");
-        
-        // تحديث الذاكرة (Cache) للمرة القادمة
-        localStorage.setItem('site_cache_v3', JSON.stringify(data));
-        
-        // معالجة وعرض البيانات
-        processData(data);
-
-        // إخفاء شاشة التحميل بذكاء (Anti-Flicker)
-        setTimeout(() => {
-            const loader = document.getElementById('site-loader');
-            if(loader) {
-                loader.style.opacity = '0';
-                setTimeout(() => loader.style.display = 'none', 500);
-            }
-        }, 500);
-    }
-});
-
-// ============================================================
-// 3. الدالة الرئيسية لتوزيع البيانات (The Router)
-// ============================================================
-function processData(data) {
-    applySettings(data);           // الإعدادات (صيانة، ألوان، إخفاء)
-    applyContent(data);            // النصوص (أخبار، سؤال، هيدر)
-    
-    // دوال الرسم (Renderers)
-    renderComplexSchedule(data.schedule_complex); // الجداول
-    renderCustomCards(data.custom_cards);         // البطاقات الإضافية
-    renderTeachers(data.teachers_list_v2);        // المعلمون
-    renderRanks(data.ranks_list);                 // الأوائل
-    renderHolidays(data.holidays_list);           // الإجازات
+/* 1. إعدادات الصفحة والخطوط */
+body {
+    font-family: 'Cairo', sans-serif;
+    background-color: #f1f5f9; /* خلفية رمادية فاتحة جداً */
+    color: #1e293b;
+    margin: 0; padding: 0;
+    direction: rtl;
+    overflow-x: hidden;
 }
 
-// ============================================================
-// 4. تطبيق الإعدادات (Settings)
-// ============================================================
-function applySettings(data) {
-    if(!data.settings) return;
-    const s = data.settings;
-
-    // أ. وضع الصيانة
-    const maint = document.getElementById('maintenance-mode');
-    const container = document.querySelector('.container');
-    const header = document.querySelector('header');
-    
-    if(s.maintenance_mode === true) {
-        if(maint) maint.style.display = 'flex';
-        if(container) container.style.display = 'none';
-        if(header) header.style.display = 'none';
-    } else {
-        if(maint) maint.style.display = 'none';
-        if(container) container.style.display = 'block';
-        if(header) header.style.display = 'block';
-    }
-
-    // ب. الإشعار المنبثق
-    const popup = document.getElementById('site-notification');
-    const dontShow = localStorage.getItem('dont_show_popup');
-    if(popup && s.popup_active === true && dontShow !== 'true') {
-        popup.style.display = 'flex';
-        setTxt('notif-title', s.popup_title || "تنبيه");
-        setTxt('notif-body', s.popup_body || "...");
-    } else if (popup) {
-        popup.style.display = 'none';
-    }
-
-    // ج. الفيديو الخلفي
-    if(s.video_url) {
-        const vid = document.getElementById('bg-video');
-        if(vid && !vid.src.includes(s.video_url)) vid.src = s.video_url;
-    }
-
-    // د. إخفاء/إظهار الأقسام
-    toggleSection('block-news', s.show_news);
-    toggleSection('block-student', s.show_student);
-    toggleSection('block-question', s.show_question);
-    toggleSection('block-ranks', s.show_ranks);
-    toggleSection('block-schedule', s.show_schedule);
-    toggleSection('block-teachers', s.show_teachers);
+.container {
+    max-width: 600px; /* عرض الجوال المثالي */
+    margin: 0 auto;
+    padding: 0 20px 100px; /* مساحة سفلية للفوتر */
 }
 
-// ============================================================
-// 5. تطبيق النصوص والمحتوى (Content)
-// ============================================================
-function applyContent(data) {
-    // الهيدر
-    if(data.site_content) {
-        const c = data.site_content;
-        setTxt('txt_header_title', c.txt_header_title);
-        setTxt('txt_header_subtitle', c.txt_header_subtitle);
-        setTxt('txt_header_location', c.txt_header_location);
-        setHTML('txt_about_content', c.txt_about_content); // HTML للحفاظ على الأسطر
-    }
-
-    // الأخبار والسؤال
-    if(data.news_bar) setTxt('dynamic-news-bar', data.news_bar.text);
-    
-    if(data.weekly_question) {
-        setHTML('weekly-question-text', `<strong>سؤال الأسبوع:</strong> ${data.weekly_question.text}`);
-        setTxt('weekly-winner-text', data.weekly_question.last_winner);
-    }
+/* 2. الهيدر الأخضر المنحني (كما في الصورة) */
+header {
+    background-color: #10b981; /* اللون الأخضر الأساسي للثريا */
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    padding: 40px 20px 60px; /* زيادة الحشوة السفلية لترك مساحة للأزرار */
+    text-align: center;
+    border-radius: 0 0 40px 40px; /* انحناء كبير من الأسفل */
+    position: relative;
+    box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);
+    margin-bottom: 0; /* مهم جداً للتداخل */
 }
 
-// ============================================================
-// 6. دوال الرسم (Renderers) - قلب الموقع
-// ============================================================
-
-// أ. رسم الجداول (نظام الأكورديون V3)
-function renderComplexSchedule(data) {
-    const container = document.getElementById('dynamic-schedule-container');
-    if(!container) return;
-    container.innerHTML = '';
-
-    if(!data) { container.innerHTML = '<p style="text-align:center; color:gray;">لا توجد جداول حالياً</p>'; return; }
-
-    Object.keys(data).sort().forEach(timeKey => {
-        const timeSection = data[timeKey];
-        if(!timeSection.rings) return;
-
-        // عنوان الوقت (عصر / مغرب)
-        const timeHeader = document.createElement('div');
-        timeHeader.className = 'section-title';
-        timeHeader.innerText = timeSection.title || "فترة";
-        timeHeader.style.marginTop = "20px";
-        container.appendChild(timeHeader);
-
-        // الحلقات
-        Object.values(timeSection.rings).forEach(ring => {
-            // الزر
-            const btn = document.createElement('div');
-            btn.className = 'accordion-btn';
-            btn.innerHTML = `<span>📖 ${ring.name}</span> <span>▼</span>`;
-            
-            // المحتوى (الجدول)
-            const panel = document.createElement('div');
-            panel.className = 'accordion-panel';
-            
-            let tableHTML = `
-                <table class="schedule-table-simple">
-                    <thead><tr><th>اليوم</th><th>النشاط</th></tr></thead>
-                    <tbody>
-                        <tr><td>السبت</td><td>${ring.sat || '-'}</td></tr>
-                        <tr><td>الأحد</td><td>${ring.sun || '-'}</td></tr>
-                        <tr><td>الاثنين</td><td>${ring.mon || '-'}</td></tr>
-                        <tr><td>الثلاثاء</td><td>${ring.tue || '-'}</td></tr>
-                        <tr><td>الأربعاء</td><td>${ring.wed || '-'}</td></tr>
-                        <tr><td>الخميس</td><td>${ring.thu || '-'}</td></tr>
-                    </tbody>
-                </table>
-                <div style="padding:10px; text-align:center;"></div>
-            `;
-            panel.innerHTML = tableHTML;
-
-            // التفاعل
-            btn.onclick = function() {
-                this.classList.toggle('active');
-                if (panel.style.display === "block") {
-                    panel.style.display = "none";
-                    this.querySelector('span:last-child').innerText = '▼';
-                } else {
-                    panel.style.display = "block";
-                    this.querySelector('span:last-child').innerText = '▲';
-                }
-            };
-
-            container.appendChild(btn);
-            container.appendChild(panel);
-        });
-    });
+header h1 { margin: 0; font-size: 2.2rem; font-weight: 800; letter-spacing: -1px; }
+.header-subtitle { opacity: 0.9; margin-top: 5px; font-size: 1.1rem; }
+.header-location { 
+    background: rgba(255,255,255,0.2); 
+    padding: 5px 15px; 
+    border-radius: 20px; 
+    font-size: 0.85rem; 
+    display: inline-block; 
+    margin-top: 15px; 
+    backdrop-filter: blur(5px);
 }
 
-// ب. رسم البطاقات المخصصة
-function renderCustomCards(list) {
-    const container = document.getElementById('dynamic-custom-cards-container');
-    if(!container) return;
-    container.innerHTML = '';
-
-    if(!list) return;
-
-    Object.values(list).forEach(card => {
-        if(card.active === false) return; // تخطي المخفي
-
-        const div = document.createElement('div');
-        div.className = 'custom-dynamic-card';
-        div.style.borderRightColor = card.color || '#3b82f6';
-        
-        let html = `<h3 style="color:${card.color || '#333'}">${card.title}</h3>`;
-        html += `<p style="white-space: pre-line;">${card.text}</p>`;
-        
-        if(card.link) {
-            html += `<a href="${card.link}" target="_blank" class="nav-btn" style="margin-top:10px; border-color:${card.color}; color:${card.color}; width:auto; display:inline-block;">${card.btn_text || 'اضغط هنا'}</a>`;
-        }
-        div.innerHTML = html;
-        container.appendChild(div);
-    });
+/* 3. شريط التنقل المتداخل (Overlap Navigation) */
+/* هذا الكود يجعل الأزرار تركب فوق الهيدر */
+.nav-container-wrapper {
+    margin-top: -35px; /* رفع العنصر للأعلى ليدخل في الهيدر */
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    padding: 0 20px;
+    position: relative;
+    z-index: 10;
+    margin-bottom: 25px;
 }
 
-// ج. رسم المعلمين
-function renderTeachers(list) {
-    const container = document.getElementById('dynamic-teachers-container');
-    if(!container) return;
-    container.innerHTML = '';
-    
-    if(!list) { container.innerHTML = '<p>لا يوجد بيانات.</p>'; return; }
-
-    Object.values(list).forEach(t => {
-        const div = document.createElement('div');
-        div.style.display = 'flex';
-        div.style.alignItems = 'center';
-        div.style.padding = '10px';
-        div.style.borderBottom = '1px solid #eee';
-        
-        div.innerHTML = `
-            <div style="width:40px; height:40px; background:#eff6ff; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-left:10px; font-size:1.2rem;">👨‍🏫</div>
-            <div>
-                <h4 style="margin:0;">${t.name}</h4>
-                <small style="color:gray;">${t.role || 'معلم'}</small>
-            </div>
-        `;
-        container.appendChild(div);
-    });
+.nav-bar-btn {
+    flex: 1; /* يأخذ مساحة متساوية */
+    background: white;
+    color: #059669;
+    border: none;
+    padding: 15px;
+    border-radius: 15px;
+    font-weight: 800;
+    font-family: 'Cairo', sans-serif;
+    font-size: 1rem;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08); /* ظل ناعم */
+    cursor: pointer;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
 }
 
-// د. رسم الأوائل
-function renderRanks(list) {
-    const container = document.getElementById('dynamic-ranks-list');
-    if(!container) return;
-    container.innerHTML = '';
-    
-    if(!list) { container.innerHTML = '<p>سيتم الإعلان قريباً.</p>'; return; }
+.nav-bar-btn:active { transform: scale(0.95); }
+.nav-bar-btn i { font-size: 1.2rem; }
 
-    // تصميم الجدول الأخضر (V3)
-    let html = `
-    <table class="ranks-table">
-        <thead>
-            <tr>
-                <th style="background:#047857; color:white;">المركز</th>
-                <th style="background:#047857; color:white;">الطالب</th>
-                <th style="background:#047857; color:white;">الحلقة</th>
-            </tr>
-        </thead>
-        <tbody>`;
-    
-    const sorted = Object.values(list).sort((a,b) => a.rank - b.rank);
-    const medals = {1:'🥇', 2:'🥈', 3:'🥉'};
-
-    sorted.forEach(r => {
-        html += `<tr>
-            <td>${medals[r.rank] || '#'+r.rank}</td>
-            <td style="font-weight:bold;">${r.name}</td>
-            <td style="font-size:0.9rem; color:#666;">${r.ring}</td>
-        </tr>`;
-    });
-    html += '</tbody></table>';
-    container.innerHTML = html;
+/* تمييز الزر النشط */
+.nav-bar-btn.active {
+    background: #064e3b; /* أخضر غامق جداً */
+    color: white;
 }
 
-
-// هـ. رسم الإجازات
-function renderHolidays(list) {
-    const ul = document.getElementById('dynamic-holidays-list');
-    if(!ul) return;
-    ul.innerHTML = '';
-    if(!list) { ul.innerHTML = '<li>لا توجد إجازات قادمة</li>'; return; }
-    Object.values(list).forEach(h => {
-        const li = document.createElement('li');
-        li.innerText = `🏖️ ${h.text}`;
-        li.style.marginBottom = '5px';
-        ul.appendChild(li);
-    });
+/* 4. ركن الطالب (تصميم البطاقات المربعة الكبيرة) */
+.student-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 أعمدة */
+    gap: 12px;
+    margin-top: 10px;
 }
 
-// ============================================================
-// 7. أدوات مساعدة (Helpers)
-// ============================================================
-function toggleSection(id, show) {
-    const el = document.getElementById(id);
-    if(el) el.style.display = (show === true) ? 'block' : 'none';
+.st-card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px 10px;
+    text-align: center;
+    text-decoration: none;
+    color: #475569;
+    font-weight: bold;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    border: 1px solid #f1f5f9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: 0.2s;
 }
 
-function closePopup() {
-    document.getElementById('site-notification').style.display = 'none';
+.st-card:hover { transform: translateY(-3px); box-shadow: 0 10px 15px rgba(0,0,0,0.05); }
+
+/* أيقونات ركن الطالب (كبيرة وملونة) */
+.st-icon { font-size: 28px; margin-bottom: 5px; }
+/* ألوان الأيقونات */
+.st-card:nth-child(1) .st-icon { color: #3b82f6; } /* أزرق */
+.st-card:nth-child(2) .st-icon { color: #10b981; } /* أخضر */
+.st-card:nth-child(3) .st-icon { color: #f59e0b; } /* برتقالي */
+.st-card:nth-child(4) .st-icon { color: #ef4444; } /* أحمر */
+.st-card:nth-child(5) .st-icon { color: #8b5cf6; } /* بنفسجي */
+.st-card:nth-child(6) .st-icon { color: #ec4899; } /* وردي */
+
+/* 5. العناوين والأقسام */
+.section-title {
+    color: #065f46; /* أخضر غامق */
+    font-weight: 800;
+    margin: 30px 0 15px;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.section-title i { color: #10b981; }
+
+.card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    border: 1px solid #e2e8f0;
+    margin-bottom: 15px;
 }
 
-function disablePopupForever() {
-    if(document.getElementById('popup-forever-check').checked) {
-        localStorage.setItem('dont_show_popup', 'true');
-        closePopup();
-    }
+/* 6. جدول الأوائل (الأخضر والذهبي) */
+.ranks-table { 
+    width: 100%; 
+    border-collapse: separate; 
+    border-spacing: 0; 
+    border-radius: 12px; 
+    overflow: hidden; 
+    border: 1px solid #e2e8f0;
+}
+.ranks-table thead th { 
+    background-color: #064e3b; /* هيدر الجدول أخضر غامق */
+    color: white; 
+    padding: 15px; 
+    font-weight: bold;
+}
+.ranks-table td { 
+    background: white; 
+    padding: 12px; 
+    text-align: center; 
+    border-bottom: 1px solid #f1f5f9; 
+    color: #334155;
+}
+.ranks-table tr:last-child td { border-bottom: none; }
+
+/* 7. الجداول والقوائم */
+.accordion-btn {
+    background: white;
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    font-weight: bold;
+    color: #1e293b;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+.accordion-panel {
+    display: none;
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 15px;
 }
 
-function toggleTheme() {
-    document.body.classList.toggle('dark-mode');
-    // يمكن هنا حفظ وضع الثيم في localStorage مستقبلاً
-}
-
-function openLoginModal() {
-    document.getElementById('login-modal').style.display = 'flex';
+/* 8. التحميل */
+#site-loader {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: white; z-index: 9999;
+    display: flex; justify-content: center; align-items: center;
 }
