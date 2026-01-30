@@ -5,87 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لوحة التحكم الشاملة - الثريا V3</title>
     
-    <script>
-        const token = localStorage.getItem('admin_token');
-        if (token !== 'SECRET_PASS_123') {
-            window.location.replace("index.html");
-        }
-    </script>
+    <link rel="stylesheet" href="css/admin_style.css">
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
-    
-    <style>
-        :root { --primary: #1e293b; --accent: #3b82f6; --bg: #f1f5f9; --text: #334155; --danger: #ef4444; --success: #10b981; }
-        body { margin: 0; font-family: 'Cairo', sans-serif; background: var(--bg); display: flex; height: 100vh; overflow: hidden; }
-
-        /* القائمة الجانبية */
-        .sidebar { width: 260px; background: var(--primary); color: white; display: flex; flex-direction: column; transition: 0.3s; z-index: 1000; box-shadow: 4px 0 10px rgba(0,0,0,0.1); }
-        .brand { padding: 20px; font-size: 1.3rem; font-weight: bold; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); }
-        .menu { list-style: none; padding: 0; margin: 0; flex: 1; overflow-y: auto; }
-        .menu li a { display: flex; align-items: center; padding: 14px 20px; color: #cbd5e1; text-decoration: none; transition: 0.2s; border-right: 4px solid transparent; cursor: pointer; font-size: 0.95rem; }
-        .menu li a:hover, .menu li a.active { background: rgba(255,255,255,0.1); color: white; border-right-color: var(--accent); }
-        .menu li a i { margin-left: 10px; width: 20px; text-align: center; }
-
-        /* المحتوى الرئيسي */
-        .main { flex: 1; padding: 25px; overflow-y: auto; position: relative; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; background: white; padding: 15px 25px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-        
-        /* البطاقات والأقسام */
-        .panel { display: none; animation: fadeIn 0.3s ease; }
-        .panel.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); margin-bottom: 20px; border: 1px solid #e2e8f0; }
-        .card h3 { margin-top: 0; border-bottom: 2px solid #f8fafc; padding-bottom: 15px; color: var(--primary); display: flex; align-items: center; gap: 10px; font-size: 1.1rem; }
-        
-        /* النماذج */
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 6px; font-weight: bold; color: var(--text); font-size: 0.9rem; }
-        .input-field, select, textarea { width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit; font-size: 0.95rem; box-sizing: border-box; transition: 0.2s; }
-        .input-field:focus { border-color: var(--accent); outline: none; }
-        
-        /* الأزرار */
-        .btn { padding: 10px 18px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: white; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; font-size: 0.9rem; }
-        .btn-primary { background: var(--accent); }
-        .btn-success { background: var(--success); }
-        .btn-danger { background: var(--danger); }
-        .btn-warning { background: #f59e0b; color: white; }
-        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
-
-        /* القوائم الديناميكية */
-        .dynamic-item { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 10px 15px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 8px; }
-        .dynamic-item strong { color: var(--primary); }
-
-        /* جداول الإدخال المعقدة */
-        .complex-table-builder { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .complex-table-builder th, .complex-table-builder td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-        .complex-table-builder th { background: #f1f5f9; font-size: 0.85rem; }
-        .complex-table-builder input { border: none; background: transparent; width: 100%; text-align: center; }
-
-        /* أزرار التبديل (Toggle) */
-        .switch { position: relative; display: inline-block; width: 46px; height: 24px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--success); }
-        input:checked + .slider:before { transform: translateX(22px); }
-
-        /* تلوين حواف البطاقات للتمييز */
-        .border-green { border-right: 4px solid var(--success); }
-        .border-blue { border-right: 4px solid var(--accent); }
-        .border-red { border-right: 4px solid var(--danger); }
-    </style>
 </head>
 <body>
+
     <aside class="sidebar">
         <div class="brand"><i class="fas fa-cogs"></i> لوحة التحكم V3</div>
         <ul class="menu">
             <li><a onclick="showTab('tab-general')" class="active"><i class="fas fa-sliders-h"></i> الإعدادات العامة</a></li>
             <li><a onclick="showTab('tab-sections')"><i class="fas fa-eye"></i> إظهار/إخفاء الأقسام</a></li>
-            <li><a onclick="showTab('tab-cards')"><i class="fas fa-th-large"></i> الأزرار والبطاقات (جديد)</a></li>
-            <li><a onclick="showTab('tab-complex-schedule')"><i class="fas fa-calendar-alt"></i> منشئ الجداول (عصر/مغرب)</a></li>
+            <li><a onclick="showTab('tab-cards')"><i class="fas fa-th-large"></i> الأزرار والبطاقات</a></li>
+            <li><a onclick="showTab('tab-complex-schedule')"><i class="fas fa-calendar-alt"></i> الجداول الدراسية</a></li>
             <li><a onclick="showTab('tab-teachers')"><i class="fas fa-chalkboard-teacher"></i> المعلمون</a></li>
             <li><a onclick="showTab('tab-ranks')"><i class="fas fa-medal"></i> أوائل الحلقات</a></li>
             <li><a onclick="showTab('tab-holidays')"><i class="fas fa-umbrella-beach"></i> الإجازات</a></li>
@@ -103,510 +36,98 @@
         </div>
 
         <div id="tab-general" class="panel active">
-            
             <div class="card border-red">
-                <h3><i class="fas fa-power-off"></i> حالة الموقع (وضع الصيانة)</h3>
+                <h3><i class="fas fa-power-off"></i> حالة الموقع</h3>
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <div>
-                        <strong>تفعيل وضع الصيانة</strong>
-                        <p style="margin:5px 0 0 0; color:gray; font-size:0.85rem;">عند التفعيل، يغلق الموقع وتظهر رسالة "تحت الصيانة".</p>
-                    </div>
-                    <label class="switch">
-                        <input type="checkbox" id="toggle_maint">
-                        <span class="slider"></span>
-                    </label>
+                    <div><strong>تفعيل وضع الصيانة</strong><p style="margin:5px 0 0 0; color:gray; font-size:0.85rem;">يغلق الموقع وتظهر رسالة صيانة.</p></div>
+                    <label class="switch"><input type="checkbox" id="toggle_maint"><span class="slider"></span></label>
                 </div>
             </div>
-
             <div class="card border-blue">
-                <h3><i class="fas fa-bell"></i> الإشعار المنبثق (Popup)</h3>
-                <div style="margin-bottom:15px; background:#eff6ff; padding:10px; border-radius:5px;">
-                    <label style="display:flex; align-items:center; gap:10px;">
-                        <input type="checkbox" id="notify_active"> <strong>تفعيل الإشعار؟</strong>
-                    </label>
-                </div>
-                <div class="form-grid">
-                    <div class="form-group"><label>العنوان:</label><input type="text" id="notify_title" class="input-field"></div>
-                    <div class="form-group"><label>نص الرسالة:</label><input type="text" id="notify_body" class="input-field"></div>
-                </div>
+                <h3><i class="fas fa-bell"></i> الإشعار المنبثق</h3>
+                <div style="margin-bottom:15px; background:#eff6ff; padding:10px; border-radius:5px;"><label style="display:flex; align-items:center; gap:10px;"><input type="checkbox" id="notify_active"> <strong>تفعيل الإشعار؟</strong></label></div>
+                <div class="form-grid"><div class="form-group"><label>العنوان:</label><input type="text" id="notify_title" class="input-field"></div><div class="form-group"><label>النص:</label><input type="text" id="notify_body" class="input-field"></div></div>
                 <button onclick="saveNotification()" class="btn btn-primary" style="margin-top:10px;">حفظ الإشعار</button>
             </div>
-
             <div class="card">
-                <h3><i class="fas fa-edit"></i> نصوص الهيدر والفيديو</h3>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>العنوان الرئيسي (H1):</label>
-                        <input type="text" id="inp_header_title" class="input-field">
-                    </div>
-                    <div class="form-group">
-                        <label>الوصف الفرعي:</label>
-                        <input type="text" id="inp_header_subtitle" class="input-field">
-                    </div>
-                    <div class="form-group">
-                        <label>الموقع الجغرافي:</label>
-                        <input type="text" id="inp_header_location" class="input-field">
-                    </div>
-                    <div class="form-group">
-                        <label>رابط فيديو الخلفية:</label>
-                        <input type="text" id="inp_video" class="input-field" placeholder="video.mp4">
-                    </div>
-                </div>
-                <button onclick="saveGeneral()" class="btn btn-primary" style="margin-top:15px;">💾 حفظ الإعدادات العامة</button>
+                <h3><i class="fas fa-edit"></i> نصوص الهيدر</h3>
+                <div class="form-grid"><div class="form-group"><label>العنوان:</label><input type="text" id="inp_header_title" class="input-field"></div><div class="form-group"><label>الوصف:</label><input type="text" id="inp_header_subtitle" class="input-field"></div><div class="form-group"><label>الموقع:</label><input type="text" id="inp_header_location" class="input-field"></div><div class="form-group"><label>فيديو الخلفية:</label><input type="text" id="inp_video" class="input-field"></div></div>
+                <button onclick="saveGeneral()" class="btn btn-primary" style="margin-top:15px;">💾 حفظ الإعدادات</button>
             </div>
         </div>
+
         <div id="tab-sections" class="panel">
             <div class="card">
                 <h3><i class="fas fa-eye"></i> التحكم بظهور الأقسام</h3>
-                <p style="color:gray; font-size:0.9rem;">يمكنك إخفاء أي قسم مؤقتاً من الموقع.</p>
-                
-                <div class="dynamic-item"><span>📢 قسم الأخبار</span><label class="switch"><input type="checkbox" id="show_news"><span class="slider"></span></label></div>
-                <div class="dynamic-item"><span>🎓 قسم نجم الأسبوع</span><label class="switch"><input type="checkbox" id="show_student"><span class="slider"></span></label></div>
-                <div class="dynamic-item"><span>❓ قسم السؤال الأسبوعي</span><label class="switch"><input type="checkbox" id="show_question"><span class="slider"></span></label></div>
-                <div class="dynamic-item"><span>🏆 قسم أوائل الحلقات (جديد)</span><label class="switch"><input type="checkbox" id="show_ranks"><span class="slider"></span></label></div>
-                <div class="dynamic-item"><span>📅 قسم الجداول</span><label class="switch"><input type="checkbox" id="show_schedule"><span class="slider"></span></label></div>
-                <div class="dynamic-item"><span>👨‍🏫 قسم المعلمين</span><label class="switch"><input type="checkbox" id="show_teachers"><span class="slider"></span></label></div>
-                
-                <br>
-                <button onclick="saveSections()" class="btn btn-primary">💾 حفظ حالة الأقسام</button>
+                <div class="dynamic-item"><span>📢 الأخبار</span><label class="switch"><input type="checkbox" id="show_news"><span class="slider"></span></label></div>
+                <div class="dynamic-item"><span>🎓 نجم الأسبوع</span><label class="switch"><input type="checkbox" id="show_student"><span class="slider"></span></label></div>
+                <div class="dynamic-item"><span>❓ السؤال الأسبوعي</span><label class="switch"><input type="checkbox" id="show_question"><span class="slider"></span></label></div>
+                <div class="dynamic-item"><span>🏆 أوائل الحلقات</span><label class="switch"><input type="checkbox" id="show_ranks"><span class="slider"></span></label></div>
+                <div class="dynamic-item"><span>📅 الجداول</span><label class="switch"><input type="checkbox" id="show_schedule"><span class="slider"></span></label></div>
+                <div class="dynamic-item"><span>👨‍🏫 المعلمون</span><label class="switch"><input type="checkbox" id="show_teachers"><span class="slider"></span></label></div>
+                <button onclick="saveSections()" class="btn btn-primary">💾 حفظ الحالة</button>
             </div>
         </div>
 
         <div id="tab-cards" class="panel">
             <div class="card border-blue">
-                <h3><i class="fas fa-plus-circle"></i> إضافة بطاقة جديدة (إعلان، تكريم، دورة...)</h3>
-                <div class="form-grid">
-                    <div class="form-group"><label>العنوان:</label><input type="text" id="card_title" class="input-field" placeholder="مثلاً: تكريم الطلاب المتميزين"></div>
-                    <div class="form-group"><label>لون التمييز:</label><input type="color" id="card_color" class="input-field" style="height:45px;" value="#3b82f6"></div>
-                </div>
-                <div class="form-group">
-                    <label>نص البطاقة:</label>
-                    <textarea id="card_text" class="input-field" rows="3" placeholder="اكتب التفاصيل هنا..."></textarea>
-                </div>
-                <div class="form-grid">
-                    <div class="form-group"><label>نص الزر (اختياري):</label><input type="text" id="card_btn_text" class="input-field" placeholder="مثلاً: مشاهدة الصور"></div>
-                    <div class="form-group"><label>رابط الزر (اختياري):</label><input type="text" id="card_link" class="input-field" placeholder="http://..."></div>
-                </div>
-                <button onclick="addCustomCard()" class="btn btn-success"><i class="fas fa-plus"></i> إضافة البطاقة للموقع</button>
+                <h3><i class="fas fa-plus-circle"></i> إضافة بطاقة جديدة</h3>
+                <div class="form-grid"><div class="form-group"><label>العنوان:</label><input type="text" id="card_title" class="input-field"></div><div class="form-group"><label>اللون:</label><input type="color" id="card_color" class="input-field" style="height:45px;" value="#3b82f6"></div></div>
+                <div class="form-group"><label>النص:</label><textarea id="card_text" class="input-field" rows="3"></textarea></div>
+                <div class="form-grid"><div class="form-group"><label>نص الزر:</label><input type="text" id="card_btn_text" class="input-field"></div><div class="form-group"><label>الرابط:</label><input type="text" id="card_link" class="input-field"></div></div>
+                <button onclick="addCustomCard()" class="btn btn-success"><i class="fas fa-plus"></i> إضافة</button>
             </div>
-
-            <div class="card">
-                <h3><i class="fas fa-th-list"></i> البطاقات الحالية</h3>
-                <div id="custom-cards-list-admin">
-                    <p style="color:gray;">جاري التحميل...</p>
-                </div>
-            </div>
+            <div class="card"><h3><i class="fas fa-th-list"></i> البطاقات الحالية</h3><div id="custom-cards-list-admin"></div></div>
         </div>
+
         <div id="tab-complex-schedule" class="panel">
             <div class="card border-green">
-                <h3><i class="fas fa-calendar-plus"></i> إضافة جدول حلقة جديد</h3>
-                <p style="color:gray; font-size:0.9rem;">أدخل اسم الحلقة، اختر الوقت، ثم املأ الجدول الأسبوعي.</p>
-                
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>وقت الحلقة:</label>
-                        <select id="comp_sch_time" class="input-field">
-                            <option value="time_1">حلقات العصر ☀️</option>
-                            <option value="time_2">حلقات المغرب 🌙</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>اسم الحلقة:</label>
-                        <input type="text" id="comp_sch_name" class="input-field" placeholder="مثلاً: حلقة أبو بكر الصديق">
-                    </div>
-                </div>
-
-                <label style="margin-top:10px; display:block;"><strong>جدول الأسبوع:</strong></label>
-                <div class="form-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); background:#f8fafc; padding:15px; border-radius:8px; border:1px solid #e2e8f0;">
-                    <div class="form-group"><label>السبت:</label><input type="text" id="d_sat" class="input-field" placeholder="مقرر/نشاط"></div>
-                    <div class="form-group"><label>الأحد:</label><input type="text" id="d_sun" class="input-field" placeholder="مقرر/نشاط"></div>
-                    <div class="form-group"><label>الاثنين:</label><input type="text" id="d_mon" class="input-field" placeholder="مقرر/نشاط"></div>
-                    <div class="form-group"><label>الثلاثاء:</label><input type="text" id="d_tue" class="input-field" placeholder="مقرر/نشاط"></div>
-                    <div class="form-group"><label>الأربعاء:</label><input type="text" id="d_wed" class="input-field" placeholder="مقرر/نشاط"></div>
-                    <div class="form-group"><label>الخميس:</label><input type="text" id="d_thu" class="input-field" placeholder="مقرر/نشاط"></div>
-                </div>
-                
-                <button onclick="addComplexSchedule()" class="btn btn-success" style="margin-top:15px;"><i class="fas fa-plus"></i> إضافة الجدول</button>
+                <h3><i class="fas fa-calendar-plus"></i> إضافة حلقة</h3>
+                <div class="form-grid"><div class="form-group"><label>الوقت:</label><select id="comp_sch_time" class="input-field"><option value="time_1">☀️ عصر</option><option value="time_2">🌙 مغرب</option></select></div><div class="form-group"><label>الاسم:</label><input type="text" id="comp_sch_name" class="input-field"></div></div>
+                <div class="form-grid" style="background:#f8fafc; padding:15px; margin-top:10px;"><div class="form-group"><label>السبت:</label><input type="text" id="d_sat" class="input-field"></div><div class="form-group"><label>الأحد:</label><input type="text" id="d_sun" class="input-field"></div><div class="form-group"><label>الاثنين:</label><input type="text" id="d_mon" class="input-field"></div><div class="form-group"><label>الثلاثاء:</label><input type="text" id="d_tue" class="input-field"></div><div class="form-group"><label>الأربعاء:</label><input type="text" id="d_wed" class="input-field"></div><div class="form-group"><label>الخميس:</label><input type="text" id="d_thu" class="input-field"></div></div>
+                <button onclick="addComplexSchedule()" class="btn btn-success" style="margin-top:15px;"><i class="fas fa-plus"></i> إضافة</button>
             </div>
-
-            <div class="card">
-                <h3><i class="fas fa-list-alt"></i> الجداول الحالية</h3>
-                <div id="complex-schedule-list-admin">
-                    <p style="color:gray;">جاري التحميل...</p>
-                </div>
-            </div>
+            <div class="card"><h3><i class="fas fa-list-alt"></i> الجداول الحالية</h3><div id="complex-schedule-list-admin"></div></div>
         </div>
 
         <div id="tab-teachers" class="panel">
             <div class="card border-blue">
-                <h3><i class="fas fa-user-plus"></i> إضافة معلم للقائمة</h3>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>اسم المعلم:</label>
-                        <input type="text" id="t_name_v2" class="input-field" placeholder="أ. فلان الفلاني">
-                    </div>
-                    <div class="form-group">
-                        <label>الوصف / الدور (يظهر تحت الاسم):</label>
-                        <input type="text" id="t_role_v2" class="input-field" placeholder="مثلاً: معلم حلقة زيد بن ثابت">
-                    </div>
-                </div>
-                <button onclick="addTeacherV2()" class="btn btn-primary"><i class="fas fa-plus"></i> إضافة المعلم</button>
+                <h3><i class="fas fa-user-plus"></i> إضافة معلم</h3>
+                <div class="form-grid"><div class="form-group"><label>الاسم:</label><input type="text" id="t_name_v2" class="input-field"></div><div class="form-group"><label>الدور:</label><input type="text" id="t_role_v2" class="input-field"></div></div>
+                <button onclick="addTeacherV2()" class="btn btn-primary"><i class="fas fa-plus"></i> إضافة</button>
             </div>
-
-            <div class="card">
-                <h3><i class="fas fa-users"></i> قائمة المعلمين</h3>
-                <div id="teachers-list-v2-admin">
-                    <p style="color:gray;">جاري التحميل...</p>
-                </div>
-            </div>
+            <div class="card"><h3><i class="fas fa-users"></i> القائمة</h3><div id="teachers-list-v2-admin"></div></div>
         </div>
+
         <div id="tab-ranks" class="panel">
             <div class="card border-green">
-                <h3><i class="fas fa-medal"></i> إضافة طالب لقائمة الأوائل</h3>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>المركز:</label>
-                        <select id="rank_num" class="input-field">
-                            <option value="1">الأول 🥇</option>
-                            <option value="2">الثاني 🥈</option>
-                            <option value="3">الثالث 🥉</option>
-                            <option value="4">الرابع</option>
-                            <option value="5">الخامس</option>
-                        </select>
-                    </div>
-                    <div class="form-group"><label>اسم الطالب:</label><input type="text" id="rank_name" class="input-field"></div>
-                    <div class="form-group"><label>اسم الحلقة:</label><input type="text" id="rank_ring" class="input-field"></div>
-                </div>
-                <button onclick="addRank()" class="btn btn-success"><i class="fas fa-plus"></i> إضافة للقائمة</button>
+                <h3><i class="fas fa-medal"></i> إضافة طالب</h3>
+                <div class="form-grid"><div class="form-group"><label>المركز:</label><select id="rank_num" class="input-field"><option value="1">1 🥇</option><option value="2">2 🥈</option><option value="3">3 🥉</option><option value="4">4</option><option value="5">5</option></select></div><div class="form-group"><label>الطالب:</label><input type="text" id="rank_name" class="input-field"></div><div class="form-group"><label>الحلقة:</label><input type="text" id="rank_ring" class="input-field"></div></div>
+                <button onclick="addRank()" class="btn btn-success"><i class="fas fa-plus"></i> إضافة</button>
             </div>
-
-            <div class="card">
-                <h3><i class="fas fa-list-ol"></i> قائمة الأوائل الحالية</h3>
-                <div id="ranks-list-admin">
-                    <p style="color:gray;">جاري التحميل...</p>
-                </div>
-            </div>
+            <div class="card"><h3><i class="fas fa-list-ol"></i> القائمة</h3><div id="ranks-list-admin"></div></div>
         </div>
 
         <div id="tab-holidays" class="panel">
             <div class="card border-red">
-                <h3><i class="fas fa-umbrella-beach"></i> إدارة قائمة الإجازات</h3>
-                <p>أضف أيام العطل الرسمية لتظهر في قسم الجداول.</p>
-                
-                <div class="form-group">
-                    <label>نص الإجازة:</label>
-                    <input type="text" id="holiday_txt" class="input-field" placeholder="مثلاً: إجازة عيد الفطر المبارك">
-                </div>
-                <button onclick="addHoliday()" class="btn btn-danger"><i class="fas fa-plus"></i> إضافة للقائمة</button>
+                <h3><i class="fas fa-umbrella-beach"></i> إضافة إجازة</h3>
+                <div class="form-group"><label>النص:</label><input type="text" id="holiday_txt" class="input-field"></div>
+                <button onclick="addHoliday()" class="btn btn-danger"><i class="fas fa-plus"></i> إضافة</button>
             </div>
-
-            <div class="card">
-                <h3><i class="fas fa-list"></i> الإجازات المسجلة</h3>
-                <div id="holidays-list-admin">
-                    <p style="color:gray;">جاري التحميل...</p>
-                </div>
-            </div>
+            <div class="card"><h3><i class="fas fa-list"></i> القائمة</h3><div id="holidays-list-admin"></div></div>
         </div>
 
         <div id="tab-news" class="panel">
-            <div class="card">
-                <h3><i class="fas fa-bullhorn"></i> شريط الأخبار المتحرك</h3>
-                <textarea id="inp_news_bar" class="input-field" rows="3"></textarea>
-                <button onclick="saveNewsBar()" class="btn btn-primary" style="margin-top:10px;">تحديث الشريط</button>
-            </div>
-
-            <div class="card">
-                <h3><i class="fas fa-question-circle"></i> سؤال الأسبوع</h3>
-                <div class="form-group"><label>نص السؤال:</label><textarea id="inp_q_text" class="input-field" rows="2"></textarea></div>
-                <div class="form-group"><label>الفائز السابق:</label><input type="text" id="inp_q_winner" class="input-field"></div>
-                <button onclick="saveQuestion()" class="btn btn-primary">تحديث السؤال</button>
-            </div>
-
-            <div class="card">
-                <h3><i class="fas fa-info-circle"></i> نص "من نحن" (الشعري)</h3>
-                <p style="color:gray; font-size:0.85rem;">يمكنك تعديل الكلمات هنا، وسيتم عرضها بنفس التصميم الجميل في الموقع.</p>
-                <textarea id="inp_about_content" class="input-field" rows="6"></textarea>
-                <button onclick="saveAbout()" class="btn btn-primary" style="margin-top:10px;">حفظ النص</button>
-            </div>
+            <div class="card"><h3><i class="fas fa-bullhorn"></i> الأخبار</h3><textarea id="inp_news_bar" class="input-field" rows="3"></textarea><button onclick="saveNewsBar()" class="btn btn-primary" style="margin-top:10px;">تحديث</button></div>
+            <div class="card"><h3><i class="fas fa-question-circle"></i> السؤال</h3><div class="form-group"><label>السؤال:</label><textarea id="inp_q_text" class="input-field" rows="2"></textarea></div><div class="form-group"><label>الفائز:</label><input type="text" id="inp_q_winner" class="input-field"></div><button onclick="saveQuestion()" class="btn btn-primary">تحديث</button></div>
+            <div class="card"><h3><i class="fas fa-info-circle"></i> من نحن</h3><textarea id="inp_about_content" class="input-field" rows="6"></textarea><button onclick="saveAbout()" class="btn btn-primary" style="margin-top:10px;">حفظ</button></div>
         </div>
+    </div>
 
-    </div> ```
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    
+    <script src="js/admin_logic.js"></script>
 
-    <script>
-        const firebaseConfig = {
-          apiKey: "AIzaSyBm8ML-1EKvQT76FJlzIQf4sn4M-MHhiRk",
-          authDomain: "quran-app-93e24.firebaseapp.com",
-          projectId: "quran-app-93e24",
-          storageBucket: "quran-app-93e24.firebasestorage.app",
-          messagingSenderId: "82150677933",
-          appId: "1:82150677933:web:64213e04463c1bb3179524"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-
-        // 1. التنقل بين التبويبات
-        function showTab(tabId) {
-            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            document.querySelectorAll('.menu a').forEach(a => a.classList.remove('active'));
-            event.target.closest('a').classList.add('active');
-        }
-
-        function logout() {
-            if(confirm("تسجيل الخروج؟")) {
-                localStorage.removeItem('admin_token');
-                window.location.replace("index.html");
-            }
-        }
-
-        // ==========================================
-        // 2. دوال الحفظ الأساسية
-        // ==========================================
-
-        function saveGeneral() {
-            db.ref('site_content').update({
-                txt_header_title: val('inp_header_title'),
-                txt_header_subtitle: val('inp_header_subtitle'),
-                txt_header_location: val('inp_header_location')
-            });
-            db.ref('settings').update({
-                video_url: val('inp_video'),
-                maintenance_mode: document.getElementById('toggle_maint').checked
-            }).then(() => alert("✅ تم الحفظ"));
-        }
-
-        function saveSections() {
-            db.ref('settings').update({
-                show_news: isChecked('show_news'),
-                show_student: isChecked('show_student'),
-                show_question: isChecked('show_question'),
-                show_ranks: isChecked('show_ranks'), // جديد
-                show_schedule: isChecked('show_schedule'),
-                show_teachers: isChecked('show_teachers')
-            }).then(() => alert("✅ تم تحديث الأقسام"));
-        }
-
-        function saveNotification() {
-            db.ref('settings').update({
-                popup_active: isChecked('notify_active'),
-                popup_title: val('notify_title'),
-                popup_body: val('notify_body')
-            }).then(() => alert("✅ تم تحديث الإشعار"));
-        }
-
-        // ==========================================
-        // 3. دوال البناء المعقدة (الميزات الجديدة)
-        // ==========================================
-
-        // أ. إضافة بطاقة مخصصة (زر جديد)
-        function addCustomCard() {
-            const title = val('card_title');
-            if(!title) return alert("اكتب عنوان البطاقة");
-
-            const cardData = {
-                title: title,
-                text: val('card_text'),
-                color: val('card_color'),
-                btn_text: val('card_btn_text'),
-                link: val('card_link'),
-                active: true
-            };
-
-            db.ref('custom_cards').push(cardData).then(() => {
-                alert("✅ تم إضافة البطاقة");
-                document.getElementById('card_title').value = '';
-                document.getElementById('card_text').value = '';
-            });
-        }
-
-        function deleteCustomCard(key) {
-            if(confirm("حذف هذه البطاقة؟")) db.ref('custom_cards/' + key).remove();
-        }
-
-        // ب. إضافة جدول حلقة (معقد)
-        function addComplexSchedule() {
-            const timeKey = val('comp_sch_time'); // time_1 or time_2
-            const name = val('comp_sch_name');
-            
-            if(!name) return alert("اكتب اسم الحلقة");
-
-            // بيانات الجدول
-            const scheduleData = {
-                name: name,
-                sat: val('d_sat'), sun: val('d_sun'), mon: val('d_mon'),
-                tue: val('d_tue'), wed: val('d_wed'), thu: val('d_thu')
-            };
-
-            // أولاً: نضمن أن عنوان الوقت موجود
-            let timeTitle = (timeKey === 'time_1') ? '☀️ حلقات العصر' : '🌙 حلقات المغرب';
-            db.ref(`schedule_complex/${timeKey}/title`).set(timeTitle);
-
-            // ثانياً: نضيف الحلقة
-            db.ref(`schedule_complex/${timeKey}/rings`).push(scheduleData).then(() => {
-                alert("✅ تم إضافة الحلقة والجدول");
-                document.getElementById('comp_sch_name').value = '';
-                // تفريغ الحقول
-                ['d_sat','d_sun','d_mon','d_tue','d_wed','d_thu'].forEach(id => document.getElementById(id).value = '');
-            });
-        }
-
-        function deleteComplexRing(timeKey, ringKey) {
-            if(confirm("حذف هذه الحلقة وجدولها؟")) {
-                db.ref(`schedule_complex/${timeKey}/rings/${ringKey}`).remove();
-            }
-        }
-        // ج. إضافة معلم (V2 - القائمة النصية الجديدة)
-        function addTeacherV2() {
-            const name = val('t_name_v2');
-            const role = val('t_role_v2');
-            if(!name) return alert("اكتب اسم المعلم");
-
-            db.ref('teachers_list_v2').push({ name: name, role: role })
-            .then(() => {
-                alert("✅ تم إضافة المعلم");
-                document.getElementById('t_name_v2').value = '';
-                document.getElementById('t_role_v2').value = '';
-            });
-        }
-        function deleteTeacherV2(key) { if(confirm("حذف هذا المعلم؟")) db.ref('teachers_list_v2/'+key).remove(); }
-
-        // د. إضافة طالب للأوائل
-        function addRank() {
-            const name = val('rank_name');
-            if(!name) return alert("اكتب اسم الطالب");
-            db.ref('ranks_list').push({
-                rank: val('rank_num'),
-                name: name,
-                ring: val('rank_ring')
-            }).then(() => { 
-                alert("✅ تم إضافة الطالب للقائمة"); 
-                document.getElementById('rank_name').value = ''; 
-            });
-        }
-        function deleteRank(key) { if(confirm("حذف هذا الطالب؟")) db.ref('ranks_list/'+key).remove(); }
-
-        // هـ. إضافة إجازة
-        function addHoliday() {
-            const txt = val('holiday_txt');
-            if(!txt) return alert("اكتب نص الإجازة");
-            db.ref('holidays_list').push({ text: txt }).then(() => { 
-                alert("✅ تم إضافة الإجازة"); 
-                document.getElementById('holiday_txt').value = ''; 
-            });
-        }
-        function deleteHoliday(key) { if(confirm("حذف هذه الإجازة؟")) db.ref('holidays_list/'+key).remove(); }
-
-        // و. حفظ النصوص (الأخبار - السؤال - من نحن)
-        function saveNewsBar() { db.ref('news_bar').set({ text: val('inp_news_bar') }).then(()=>alert("✅ تم تحديث الشريط")); }
-        function saveQuestion() { db.ref('weekly_question').set({ text: val('inp_q_text'), last_winner: val('inp_q_winner') }).then(()=>alert("✅ تم تحديث السؤال")); }
-        function saveAbout() { db.ref('site_content/txt_about_content').set(val('inp_about_content')).then(()=>alert("✅ تم حفظ نص من نحن")); }
-
-        // ==========================================
-        // 4. تحميل وعرض البيانات (Realtime Loading)
-        // ==========================================
-        db.ref().on('value', (snapshot) => {
-            const d = snapshot.val();
-            if(!d) return;
-
-            // أ. تعبئة الإعدادات والنصوص
-            if(d.settings) {
-                document.getElementById('toggle_maint').checked = d.settings.maintenance_mode;
-                document.getElementById('inp_video').value = d.settings.video_url || "";
-                
-                // الإشعارات
-                document.getElementById('notify_active').checked = d.settings.popup_active;
-                document.getElementById('notify_title').value = d.settings.popup_title || "";
-                document.getElementById('notify_body').value = d.settings.popup_body || "";
-                
-                // الأقسام
-                ['news','student','question','ranks','schedule','teachers'].forEach(k => {
-                    const el = document.getElementById('show_'+k);
-                    if(el) el.checked = d.settings['show_'+k];
-                });
-            }
-            
-            // تعبئة النصوص
-            if(d.site_content) {
-                document.getElementById('inp_header_title').value = d.site_content.txt_header_title || "";
-                document.getElementById('inp_header_subtitle').value = d.site_content.txt_header_subtitle || "";
-                document.getElementById('inp_header_location').value = d.site_content.txt_header_location || "";
-                document.getElementById('inp_about_content').value = d.site_content.txt_about_content || "";
-            }
-            if(d.news_bar) document.getElementById('inp_news_bar').value = d.news_bar.text;
-            if(d.weekly_question) {
-                document.getElementById('inp_q_text').value = d.weekly_question.text;
-                document.getElementById('inp_q_winner').value = d.weekly_question.last_winner;
-            }
-
-            // ب. رسم القوائم (Render Lists)
-            renderList('custom-cards-list-admin', d.custom_cards, 'card');
-            renderList('teachers-list-v2-admin', d.teachers_list_v2, 'teacher');
-            renderList('ranks-list-admin', d.ranks_list, 'rank');
-            renderList('holidays-list-admin', d.holidays_list, 'holiday');
-            
-            // رسم قائمة الجداول المعقدة
-            renderComplexScheduleAdmin(d.schedule_complex);
-        });
-
-        // دوال الرسم المساعدة
-        function renderList(id, data, type) {
-            const el = document.getElementById(id);
-            el.innerHTML = '';
-            if(!data) { el.innerHTML = '<p>لا توجد بيانات.</p>'; return; }
-
-            Object.entries(data).forEach(([key, item]) => {
-                let content = '', func = '';
-                
-                if(type === 'card') {
-                    content = `<strong style="color:${item.color}">${item.title}</strong>`;
-                    func = `deleteCustomCard('${key}')`;
-                } else if(type === 'teacher') {
-                    content = `<strong>${item.name}</strong> <small style="color:gray;">(${item.role})</small>`;
-                    func = `deleteTeacherV2('${key}')`;
-                } else if(type === 'rank') {
-                    content = `Rank ${item.rank}: <strong>${item.name}</strong> <small>(${item.ring})</small>`;
-                    func = `deleteRank('${key}')`;
-                } else if(type === 'holiday') {
-                    content = item.text;
-                    func = `deleteHoliday('${key}')`;
-                }
-                
-                el.innerHTML += `
-                    <div class="dynamic-item">
-                        <div>${content}</div>
-                        <button onclick="${func}" class="btn btn-danger" style="padding:4px 10px; font-size:0.8rem;">حذف</button>
-                    </div>`;
-            });
-        }
-
-        // رسم قائمة الجداول في الأدمن (بتنسيق شجري)
-        function renderComplexScheduleAdmin(data) {
-            const el = document.getElementById('complex-schedule-list-admin');
-            el.innerHTML = '';
-            if(!data) { el.innerHTML = '<p>لا توجد جداول.</p>'; return; }
-
-            // ترتيب الأوقات (time_1 ثم time_2)
-            Object.keys(data).sort().forEach(timeKey => {
-                if(data[timeKey].rings) {
-                    const title = (timeKey === 'time_1') ? '☀️ حلقات العصر' : '🌙 حلقات المغرب';
-                    el.innerHTML += `<h4 style="margin:15px 0 5px 0; color:#3b82f6; border-bottom:2px solid #e2e8f0; padding-bottom:5px;">${title}</h4>`;
-                    
-                    Object.entries(data[timeKey].rings).forEach(([key, ring]) => {
-                        el.innerHTML += `
-                            <div class="dynamic-item">
-                                <div>📖 <strong>${ring.name}</strong></div>
-                                <button onclick="deleteComplexRing('${timeKey}', '${key}')" class="btn btn-danger" style="padding:4px 10px; font-size:0.8rem;">حذف</button>
-                            </div>`;
-                    });
-                }
-            });
-        }
-
-        function val(id) { return document.getElementById(id).value; }
-        function isChecked(id) { return document.getElementById(id).checked; }
-
-    </script>
 </body>
 </html>
