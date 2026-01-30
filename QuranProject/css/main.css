@@ -1,0 +1,211 @@
+/* ============================================================
+   ملف: css/main.css
+   الوظيفة: تصميم واجهة الزوار (index.html)
+   ============================================================ */
+
+/* --- 1. التنسيق العام والخطوط --- */
+body {
+    font-family: 'Cairo', 'Tajawal', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    margin: 0;
+    padding: 0;
+    direction: rtl;
+    transition: background 0.3s, color 0.3s;
+    overflow-x: hidden;
+}
+
+/* الحاوية الرئيسية (وسط الشاشة) */
+.container {
+    max-width: 800px; /* عرض مناسب للجوال */
+    margin: 0 auto;
+    padding: 0 15px 80px 15px; /* 80px في الأسفل عشان الفوتر */
+}
+
+/* --- 2. تصميم الرأس (Header) --- */
+header {
+    background: var(--primary-color);
+    color: white;
+    padding: 40px 20px 30px;
+    text-align: center;
+    border-radius: 0 0 30px 30px;
+    margin-bottom: 25px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+header h1 { margin: 0; font-size: 2.2rem; font-weight: 700; }
+.header-subtitle { font-size: 1.1rem; opacity: 0.9; margin-top: 5px; }
+.header-location { 
+    background: rgba(255,255,255,0.2); 
+    display: inline-block; 
+    padding: 5px 15px; 
+    border-radius: 20px; 
+    font-size: 0.9rem; 
+    margin-top: 10px; 
+}
+
+/* --- 3. تصميم البطاقات (Cards) --- */
+/* إذا أردت إضافة بطاقة جديدة، ستأخذ هذا التصميم تلقائياً */
+.card {
+    background: var(--bg-light);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s;
+}
+
+.section-title {
+    color: var(--primary-color);
+    font-weight: 700;
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    border-bottom: 2px solid var(--bg-color);
+    padding-bottom: 10px;
+}
+
+/* البطاقات المخصصة (الديناميكية) */
+.custom-dynamic-card {
+    background: var(--bg-light);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid var(--border-color);
+    border-right-width: 5px; /* الشريط الملون الجانبي */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* --- 4. تصميم الأزرار (Buttons) --- */
+/* أضف أي زر جديد باستخدام كلاس .nav-btn */
+.nav-btn {
+    width: 100%;
+    background: var(--bg-light);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: 0.2s;
+    margin-bottom: 8px;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+    box-sizing: border-box;
+}
+
+.nav-btn:hover {
+    background: var(--bg-color);
+    transform: translateY(-2px);
+    border-color: var(--accent-color);
+}
+
+.nav-btn.active {
+    background: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+}
+
+/* شبكة أزرار ركن الطالب (Student Grid) */
+.student-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 أزرار في الصف */
+    gap: 10px;
+}
+.st-btn {
+    background: var(--bg-light);
+    border: 1px solid var(--border-color);
+    padding: 15px 5px;
+    border-radius: 10px;
+    text-align: center;
+    text-decoration: none;
+    color: var(--text-main);
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    transition: 0.2s;
+}
+.st-btn:hover { border-color: var(--accent-color); color: var(--accent-color); }
+
+/* --- 5. القوائم المنسدلة (Accordion) --- */
+/* تستخدم للجداول وركن الطالب */
+.accordion-btn {
+    width: 100%;
+    text-align: right;
+    background: var(--bg-light);
+    border: 1px solid var(--border-color);
+    padding: 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    font-family: inherit;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+    color: var(--text-main);
+}
+.accordion-panel {
+    display: none; /* مخفي افتراضياً */
+    padding: 0 10px;
+    background: var(--bg-light);
+    overflow: hidden;
+    margin-bottom: 10px;
+    border-radius: 0 0 10px 10px;
+}
+
+/* --- 6. جداول الحلقات (Schedules) --- */
+.schedule-table-simple {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    margin-top: 10px;
+}
+.schedule-table-simple th {
+    background: var(--primary-color);
+    color: white;
+    padding: 8px;
+}
+.schedule-table-simple td {
+    border: 1px solid var(--border-color);
+    padding: 8px;
+    text-align: center;
+    color: var(--text-main);
+}
+
+/* --- 7. الفوتر وشاشات التحميل --- */
+footer {
+    text-align: center;
+    padding: 20px;
+    color: var(--text-light);
+    font-size: 0.9rem;
+    border-top: 1px solid var(--border-color);
+    margin-top: 30px;
+}
+
+/* شريط التحميل العلوي */
+#top-loader {
+    position: fixed; top: 0; left: 0;
+    height: 4px; background: var(--accent-color);
+    z-index: 9999; width: 0%;
+    transition: width 0.3s;
+}
+
+/* الإشعار المنبثق */
+.popup-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7); z-index: 2000;
+    display: none; justify-content: center; align-items: center;
+}
+.popup-content {
+    background: var(--bg-light); padding: 25px;
+    border-radius: 15px; width: 90%; max-width: 400px;
+    text-align: center; border: 2px solid var(--accent-color);
+    color: var(--text-main);
+}
