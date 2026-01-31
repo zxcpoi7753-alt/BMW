@@ -13,6 +13,11 @@ const firebaseConfig = {
   appId: "1:82150677933:web:64213e04463c1bb3179524"
 };
 
+// تهيئة الاتصال (هذا السطر مهم جداً)
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+
 try {
     // تهيئة فايربيس مرة واحدة فقط
     if (!firebase.apps.length) {
