@@ -1,6 +1,6 @@
 /* ============================================================
-   ملف: js/custom_logic.js
-   الوظيفة: جلب البيانات من فايربيس وعرضها في الصفحة الرئيسية
+   ملف: js/custom_logic.js (معدل للحماية)
+   الوظيفة: جلب البيانات + تسجيل الدخول الآمن
    ============================================================ */
 
 const firebaseConfig = {
@@ -13,284 +13,199 @@ const firebaseConfig = {
 };
 
 try {
-    firebase.initializeApp(firebaseConfig);
+    // تهيئة فايربيس مرة واحدة فقط
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
     const db = firebase.database();
+    const auth = firebase.auth(); // تعريف المصادقة
 
     // الاستماع للبيانات (Realtime)
     db.ref().on('value', (snapshot) => {
         const data = snapshot.val();
         if (data) {
-            // 1. تطبيق الإعدادات (صيانة، فيديو، إخفاء أقسام)
             applySettings(data);
-            
-            // 2. تطبيق المحتوى والنصوص
             applyContent(data);
+            renderComplexSchedule(data.schedule_complex);
             
-            // 3. بناء الأقسام الديناميكية المعقدة
-            renderComplexSchedule(data.schedule_complex); // الجداول القديمة
-            renderTeachers(data.teachers_list_v2);        // المعلمون (نص)
-            renderCustomCards(data.custom_cards);         // الأزرار الإضافية
-            renderRanks(data.ranks_list);                 // أوائل الحلقات
-            renderHolidays(data.holidays_list);           // الإجازات
-
-            // 4. إخفاء شاشة التحميل (Anti-Flicker)
+            // إخفاء اللودر عند اكتمال التحميل
             setTimeout(() => {
                 const loader = document.getElementById('site-loader');
-                if(loader) {
-                    loader.style.opacity = '0';
-                    setTimeout(() => loader.style.display = 'none', 500);
-                }
-            }, 800);
+                if(loader) loader.style.opacity = '0';
+                setTimeout(() => { if(loader) loader.style.display = 'none'; }, 500);
+            }, 1500);
         }
     });
 
-} catch (error) { console.error(error); }
+} catch (error) {
+    console.error("Firebase Error:", error);
+}
 
-// ==========================================
-// 1. دوال التطبيق الأساسية
-// ==========================================
-
+// 1. تطبيق الإعدادات العامة
 function applySettings(data) {
-    if(!data.settings) return;
-    const s = data.settings;
-
-    // أ. وضع الصيانة
-    const maint = document.getElementById('maintenance-mode');
-    if(s.maintenance_mode === true) {
-        maint.style.display = 'flex';
-        document.querySelector('.container').style.display = 'none';
-        document.querySelector('header').style.display = 'none';
-    } else {
-        maint.style.display = 'none';
-        document.querySelector('.container').style.display = 'block';
-        document.querySelector('header').style.display = 'block';
-    }
-
-    // ب. الإشعار المنبثق (الذكية)
-    const popup = document.getElementById('site-notification');
-    const dontShow = localStorage.getItem('dont_show_popup');
-    
-    // يظهر فقط إذا: (مفعل من الأدمن) + (المستخدم لم يختر "عدم الإظهار")
-    if(s.popup_active === true && dontShow !== 'true') {
-        popup.style.display = 'flex';
-        document.getElementById('notif-title').innerText = s.popup_title || "تنبيه";
-        document.getElementById('notif-body').innerText = s.popup_body || "...";
-    } else {
-        popup.style.display = 'none';
-    }
-
-    // ج. إخفاء/إظهار الأقسام الرئيسية
-    toggleSection('block-news', s.show_news);
-    toggleSection('block-student', s.show_student);
-    toggleSection('block-question', s.show_question);
-    toggleSection('block-teachers', s.show_teachers);
-    toggleSection('block-schedule', s.show_schedule);
-    toggleSection('block-ranks', s.show_ranks);
-
-    // د. الفيديو
-    if(s.video_url) {
-        const vid = document.getElementById('bg-video');
-        if(!vid.src.includes(s.video_url)) vid.src = s.video_url;
-    }
-}
-
-function applyContent(data) {
-    // شريط الأخبار والسؤال
-    if(data.news_bar) setTxt('dynamic-news-bar', data.news_bar.text);
-    if(data.weekly_question) {
-        setHTML('weekly-question-text', `<strong>سؤال الأسبوع:</strong> ${data.weekly_question.text}`);
-        setTxt('weekly-winner-text', data.weekly_question.last_winner);
-    }
-    if(data.top_student) {
-        setTxt('top-student-name', data.top_student.name);
-        setTxt('top-student-desc', data.top_student.category);
-    }
-    
-    // نصوص الموقع (من نحن، الهيدر، الفوتر)
-    if(data.site_content) {
-        const c = data.site_content;
-        setTxt('txt_header_title', c.txt_header_title);
-        setTxt('txt_header_subtitle', c.txt_header_subtitle);
-        setTxt('txt_header_location', c.txt_header_location);
-        setTxt('txt_news_title', c.txt_news_title);
-        setTxt('txt_student_title', c.txt_student_title);
-        setTxt('txt_question_title', c.txt_question_title);
-        setTxt('txt_about_title', c.txt_about_title);
-        // هنا نستخدم setHTML ليحافظ على تنسيق الأبيات الشعرية
-        setHTML('txt_about_content', c.txt_about_content); 
-        setTxt('txt_contact_title', c.txt_contact_title);
-        setTxt('txt_footer', c.txt_footer);
-        if(c.txt_schedule_title) setTxt('txt_schedule_title', c.txt_schedule_title);
-        if(c.txt_teachers_title) setTxt('txt_teachers_title', c.txt_teachers_title);
-    }
-}
-
-// ==========================================
-// 2. دوال بناء المحتوى (Renderers)
-// ==========================================
-
-// أ. بناء البطاقات المخصصة
-function renderCustomCards(list) {
-    const container = document.getElementById('dynamic-custom-cards-container');
-    if(!container) return;
-    container.innerHTML = ''; 
-
-    if(!list) return;
-
-    Object.values(list).forEach(card => {
-        if(card.active === false) return;
-
-        const div = document.createElement('div');
-        div.className = 'custom-dynamic-card';
-        div.style.borderRightColor = card.color || '#3b82f6';
-        
-        let html = `<h3 style="color:${card.color || '#333'}">${card.title}</h3>`;
-        html += `<p style="white-space: pre-line;">${card.text}</p>`;
-        
-        if(card.link) {
-            html += `<a href="${card.link}" target="_blank" class="nav-btn" style="margin-top:10px; border-color:${card.color}; color:${card.color}; width:auto; display:inline-block;">${card.btn_text || 'اضغط هنا'}</a>`;
+    if(data.settings) {
+        if(data.settings.maintenance_mode) {
+            document.getElementById('maintenance-mode').style.display = 'flex';
+        } else {
+            document.getElementById('maintenance-mode').style.display = 'none';
         }
-
-        div.innerHTML = html;
-        container.appendChild(div);
-    });
-}
-
-// ب. بناء الجدول المعقد
-function renderComplexSchedule(data) {
-    const container = document.getElementById('dynamic-schedule-container');
-    if(!container) return;
-    container.innerHTML = '';
-
-    if(!data) { container.innerHTML = '<p style="text-align:center;">لا توجد جداول حالياً</p>'; return; }
-
-    Object.keys(data).sort().forEach(timeKey => {
-        const timeSection = data[timeKey];
-        if(!timeSection.rings) return;
-
-        const timeHeader = document.createElement('div');
-        timeHeader.className = 'time-group-title';
-        timeHeader.innerText = timeSection.title || "فترة";
-        container.appendChild(timeHeader);
-
-        Object.values(timeSection.rings).forEach(ring => {
-            const btn = document.createElement('div');
-            btn.className = 'ring-accordion-btn';
-            btn.innerHTML = `<span>📖 ${ring.name}</span> <span>▼</span>`;
-            
-            const panel = document.createElement('div');
-            panel.className = 'ring-schedule-panel';
-            
-            let tableHTML = `
-                <table class="schedule-table-simple">
-                    <thead><tr><th>اليوم</th><th>المقرر / النشاط</th></tr></thead>
-                    <tbody>
-                        <tr><td>السبت</td><td>${ring.sat || '-'}</td></tr>
-                        <tr><td>الأحد</td><td>${ring.sun || '-'}</td></tr>
-                        <tr><td>الاثنين</td><td>${ring.mon || '-'}</td></tr>
-                        <tr><td>الثلاثاء</td><td>${ring.tue || '-'}</td></tr>
-                        <tr><td>الأربعاء</td><td>${ring.wed || '-'}</td></tr>
-                        <tr><td>الخميس</td><td>${ring.thu || '-'}</td></tr>
-                    </tbody>
-                </table>
-            `;
-            panel.innerHTML = tableHTML;
-
-            btn.onclick = function() {
-                this.classList.toggle('active');
-                if (panel.style.display === "block") {
-                    panel.style.display = "none";
-                    this.querySelector('span:last-child').innerText = '▼';
-                } else {
-                    panel.style.display = "block";
-                    this.querySelector('span:last-child').innerText = '▲';
-                }
-            };
-
-            container.appendChild(btn);
-            container.appendChild(panel);
-        });
-    });
-}
-
-// ج. بناء قائمة المعلمين
-function renderTeachers(list) {
-    const container = document.getElementById('dynamic-teachers-container');
-    if(!container) return;
-    container.innerHTML = '';
-    
-    if(!list) { container.innerHTML = '<p>لا يوجد معلمون حالياً</p>'; return; }
-
-    Object.values(list).forEach(t => {
-        const div = document.createElement('div');
-        div.className = 'teacher-row';
-        div.innerHTML = `
-            <div class="teacher-icon"><i class="fas fa-user-tie"></i></div>
-            <div class="teacher-info">
-                <h4>${t.name}</h4>
-                <p>${t.role || 'معلم فاضل'}</p>
-            </div>
-        `;
-        container.appendChild(div);
-    });
-}
-
-// د. بناء قائمة الأوائل
-function renderRanks(list) {
-    const container = document.getElementById('dynamic-ranks-list');
-    if(!container) return;
-    container.innerHTML = '';
-    
-    if(!list) { container.innerHTML = '<p>لم يتم رفع الأسماء بعد</p>'; return; }
-
-    let html = '<table class="schedule-table-simple" style="width:100%"><thead><tr><th>المركز</th><th>الطالب</th><th>الحلقة</th></tr></thead><tbody>';
-    Object.values(list).forEach(r => {
-        let medal = '';
-        if(r.rank == 1) medal = '🥇';
-        else if(r.rank == 2) medal = '🥈';
-        else if(r.rank == 3) medal = '🥉';
         
-        html += `<tr>
-            <td>${medal} ${r.rank}</td>
-            <td><strong>${r.name}</strong></td>
-            <td>${r.ring}</td>
-        </tr>`;
-    });
-    html += '</tbody></table>';
-    container.innerHTML = html;
+        handlePopup(data.settings);
+        handleSections(data.settings);
+        
+        // الفيديو في الهيدر
+        const vidContainer = document.getElementById('header-video-frame');
+        if(data.settings.video_url && data.settings.video_url.length > 5) {
+             vidContainer.style.display = 'block';
+             vidContainer.innerHTML = `<video autoplay loop muted playsinline><source src="${data.settings.video_url}" type="video/mp4"></video>`;
+        }
+    }
 }
 
-// هـ. بناء قائمة الإجازات
-function renderHolidays(list) {
-    const ul = document.getElementById('dynamic-holidays-list');
-    if(!ul) return;
-    ul.innerHTML = '';
-    if(!list) { ul.innerHTML = '<li>لا توجد إجازات قريبة</li>'; return; }
-    
-    Object.values(list).forEach(h => {
-        const li = document.createElement('li');
-        li.innerText = h.text;
-        ul.appendChild(li);
+// 2. تطبيق النصوص والمحتوى
+function applyContent(data) {
+    if(data.site_content) {
+        setText('header-title', data.site_content.txt_header_title);
+        setText('header-subtitle', data.site_content.txt_header_subtitle);
+        setText('header-location', data.site_content.txt_header_location);
+    }
+
+    if(data.news_bar) {
+        document.getElementById('dynamic-news-bar').innerHTML = 
+        `<div class="poetic-text" style="background:var(--card-bg); border-right:4px solid var(--accent-color);">
+            🔔 <strong>تنويه:</strong> ${data.news_bar.text}
+        </div>`;
+    }
+
+    if(data.weekly_question) {
+        document.getElementById('dynamic-question-box').innerHTML = 
+        `<div class="card" style="border:1px solid var(--accent-color);">
+            <h3 style="text-align:center; color:var(--primary-color);">💎 سؤال الأسبوع</h3>
+            <p style="text-align:center; font-weight:bold; font-size:1.1rem;">${data.weekly_question.text}</p>
+            <div style="background:rgba(251, 191, 36, 0.2); padding:10px; border-radius:8px; text-align:center; margin-top:10px;">
+                <small>الفائز الأخير:</small><br><strong>${data.weekly_question.last_winner}</strong> 👑
+            </div>
+        </div>`;
+    }
+
+    if(data.custom_cards) {
+        const container = document.getElementById('custom-cards-container');
+        container.innerHTML = '';
+        Object.values(data.custom_cards).forEach(card => {
+            if(card.active) {
+                container.innerHTML += `
+                <div class="custom-dynamic-card" style="border-right-color:${card.color}">
+                    <h3 style="color:${card.color}">${card.title}</h3>
+                    <p>${card.text}</p>
+                    <a href="${card.link}" target="_blank" class="nav-btn" style="display:inline-block; text-decoration:none; border-color:${card.color}; color:${card.color}; font-size:0.9rem;">
+                        ${card.btn_text}
+                    </a>
+                </div>`;
+            }
+        });
+    }
+
+    renderLists(data);
+}
+
+// 3. دوال مساعدة للعرض
+function setText(id, txt) { const el = document.getElementById(id); if(el) el.innerText = txt || ""; }
+
+function handlePopup(settings) {
+    if(settings.popup_active && localStorage.getItem('dont_show_popup') !== 'true') {
+        document.getElementById('site-notification').style.display = 'flex';
+        document.getElementById('popup-title').innerText = settings.popup_title;
+        document.getElementById('popup-body').innerText = settings.popup_body;
+    }
+}
+
+function handleSections(settings) {
+    const map = {
+        'show_ranks': 'ranks-section',
+        'show_schedule': 'schedule-section',
+        'show_teachers': 'teachers-section',
+        'show_news': 'dynamic-news-bar',
+        'show_student': 'student-login-card',
+        'show_question': 'dynamic-question-box'
+    };
+    Object.keys(map).forEach(key => {
+        const el = document.getElementById(map[key]);
+        if(el) el.style.display = settings[key] ? 'block' : 'none';
     });
 }
 
-// ==========================================
-// 3. دوال مساعدة (Helpers)
-// ==========================================
+function renderLists(data) {
+    // عرض الأوائل
+    const ranksDiv = document.getElementById('ranks-grid-display');
+    if(ranksDiv && data.ranks_list) {
+        ranksDiv.innerHTML = '';
+        Object.values(data.ranks_list).forEach(r => {
+            ranksDiv.innerHTML += `
+            <div class="student-row">
+                <span>🏅 المركز ${r.rank}</span>
+                <strong>${r.name}</strong>
+                <small>(${r.ring})</small>
+            </div>`;
+        });
+    }
 
-function setTxt(id, txt) { const el = document.getElementById(id); if(el && txt) el.innerText = txt; }
-function setHTML(id, txt) { const el = document.getElementById(id); if(el && txt) el.innerHTML = txt; }
+    // عرض المعلمين
+    const teachersDiv = document.getElementById('teachers-grid-display');
+    if(teachersDiv && data.teachers_list_v2) {
+        teachersDiv.innerHTML = '';
+        Object.values(data.teachers_list_v2).forEach(t => {
+            teachersDiv.innerHTML += `
+            <div class="teacher-row">
+                <div class="teacher-icon"><i class="fas fa-user-tie"></i></div>
+                <div class="teacher-info"><h4>${t.name}</h4><p>${t.role}</p></div>
+            </div>`;
+        });
+    }
+}
 
-function toggleSection(id, show) {
-    const el = document.getElementById(id);
-    if(el) {
-        if(show === true) el.style.display = 'block';
-        else el.style.display = 'none';
+function renderComplexSchedule(scheduleData) {
+    const container = document.getElementById('complex-schedule-display');
+    if(!container || !scheduleData) return;
+    container.innerHTML = '';
+
+    Object.keys(scheduleData).sort().forEach(timeKey => {
+        const group = scheduleData[timeKey];
+        if(group.rings) {
+            container.innerHTML += `<div class="time-group-title">${group.title || 'فترة'}</div>`;
+            Object.values(group.rings).forEach(ring => {
+                // إنشاء ID عشوائي للزر
+                const uid = 'ring-' + Math.floor(Math.random()*10000);
+                container.innerHTML += `
+                <button class="ring-accordion-btn" onclick="toggleSchedulePanel('${uid}')">
+                    📖 ${ring.name} <span class="arrow-icon">▼</span>
+                </button>
+                <div id="${uid}" class="ring-schedule-panel">
+                    <table class="schedule-table-simple">
+                        <tr><th>السبت</th><th>الأحد</th><th>الاثنين</th></tr>
+                        <tr><td>${ring.sat||'-'}</td><td>${ring.sun||'-'}</td><td>${ring.mon||'-'}</td></tr>
+                        <tr><th>الثلاثاء</th><th>الأربعاء</th><th>الخميس</th></tr>
+                        <tr><td>${ring.tue||'-'}</td><td>${ring.wed||'-'}</td><td>${ring.thu||'-'}</td></tr>
+                    </table>
+                </div>`;
+            });
+        }
+    });
+}
+
+function toggleSchedulePanel(id) {
+    const panel = document.getElementById(id);
+    const btn = panel.previousElementSibling;
+    if (panel.style.display === "block") {
+        panel.style.display = "none";
+        btn.classList.remove("active");
+    } else {
+        panel.style.display = "block";
+        btn.classList.add("active");
     }
 }
 
 // ==========================================
-// 4. دوال التفاعل (Popup & Login)
+// 4. دوال التفاعل (Popup & Login) - محدث للحماية
 // ==========================================
 
 function closePopup() {
@@ -308,28 +223,29 @@ function disablePopupForever() {
 
 function openLoginModal() { document.getElementById('login-modal').style.display = 'flex'; }
 
+// دالة الدخول الجديدة (المؤمنة)
 function secureLogin() {
-    const u = document.getElementById('admin-user').value;
-    const p = document.getElementById('admin-pass').value;
-    const db = firebase.database();
+    const email = document.getElementById('admin-user').value;
+    const pass = document.getElementById('admin-pass').value;
+    const btn = document.querySelector('#login-modal button');
     
-    db.ref('admin_account').once('value').then(snap => {
-        const creds = snap.val();
-        let realU = "admin", realP = "12345";
-        
-        if(creds) { 
-            realU = creds.username; 
-            realP = creds.password; 
-        }
-        
-        if(u === realU && p === realP) {
-            localStorage.setItem('admin_token', 'SECRET_PASS_123');
+    if(!email || !pass) {
+        alert("الرجاء إدخال البريد الإلكتروني وكلمة المرور");
+        return;
+    }
+
+    const oldText = btn.innerText;
+    btn.innerText = "جاري التحقق...";
+
+    firebase.auth().signInWithEmailAndPassword(email, pass)
+        .then((userCredential) => {
+            console.log("تم تسجيل الدخول:", userCredential.user.email);
             window.location.href = "admin.html";
-        } else {
-            alert("⛔ خطأ في اسم المستخدم أو كلمة المرور");
-        }
-    }).catch(error => {
-        console.error(error);
-        alert("حدث خطأ في الاتصال، تأكد من الإنترنت.");
-    });
+        })
+        .catch((error) => {
+            btn.innerText = oldText;
+            if(error.code === 'auth/user-not-found') alert("⛔ هذا المستخدم غير موجود!");
+            else if (error.code === 'auth/wrong-password') alert("⛔ كلمة المرور خاطئة!");
+            else alert("⛔ حدث خطأ: " + error.message);
+        });
 }
