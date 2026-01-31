@@ -11,7 +11,12 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="css/main.css">        <link rel="stylesheet" href="css/layout.css">      <link rel="stylesheet" href="css/components.css">  <link rel="stylesheet" href="css/darkmode.css">    <link rel="stylesheet" href="css/custom_style.css"></head>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/darkmode.css">
+    <link rel="stylesheet" href="css/custom_style.css">
+</head>
 <body oncontextmenu="return false;">
 
     <div id="site-loader">
@@ -20,303 +25,127 @@
     </div>
 
     <div id="maintenance-mode">
-        <h1 style="font-size: 3rem;">🚧</h1>
+        <h1 style="font-size:3rem;">🚧</h1>
         <h2>الموقع تحت الصيانة</h2>
-        <p>نقوم ببعض التحسينات، سنعود قريباً...</p>
-        <button onclick="openLoginModal()" style="margin-top:20px; background: transparent; border: 1px solid white; color: white; padding: 5px 15px; border-radius: 20px; cursor: pointer;">دخول المشرف</button>
+        <p>نعود إليكم قريباً بحلة جديدة</p>
     </div>
 
-    <div id="site-notification" class="popup-overlay">
+    <div class="popup-overlay" id="site-notification">
         <div class="popup-content">
-            <h3 id="notif-title" style="color:var(--primary-color); margin-top:0;">📢 تنبيه هام</h3>
-            <p id="notif-body" style="font-size:1.1rem; line-height:1.6; color:#333;">...</p>
-            <button onclick="closePopup()" class="nav-btn active" style="margin-top:15px; width:100%;">حسناً، فهمت ✅</button>
-            <div class="dont-show-again" onclick="disablePopupForever()">
+            <h3 id="popup-title" style="color:var(--primary-color);"></h3>
+            <p id="popup-body"></p>
+            <div class="dont-show-again">
                 <input type="checkbox" id="popup-forever-check">
-                <span>لا تظهر هذه الرسالة مرة أخرى</span>
+                <label for="popup-forever-check">لا تعرض هذه الرسالة مرة أخرى</label>
             </div>
+            <button onclick="disablePopupForever()" class="nav-btn" style="margin-top:15px; width:100%;">حسناً</button>
         </div>
     </div>
-    
-    <div id="toast-container" class="toast-container"></div>
-
-    <header>
-        <button class="theme-circle-btn" onclick="toggleTheme()" id="theme-btn" title="تغيير المظهر">🌙</button>
-        
-        <div class="video-container">
-            <video id="bg-video" autoplay muted loop playsinline>
-                <source src="1768472913710.mp4" type="video/mp4">
-            </video>
-        </div>
-        
-        <h1 id="txt_header_title">حلقات الثريا</h1>
-        <p class="header-subtitle" id="txt_header_subtitle">لتعليم القرآن الكريم</p>
-        <p class="header-location" id="txt_header_location">حضرموت - غيل باوزير</p>
-        <div id="verse-display" class="verse-ticker"></div>
-    </header>
 
     <div class="nav-container-wrapper">
-        <button class="nav-btn-home active" onclick="showSection('home')">🏠 الرئيسية</button>
+        <button class="nav-btn-home" onclick="showSection('home')">
+            🏠 الرئيسية
+        </button>
+        
         <div class="nav-expand-btn" onclick="toggleNavMenu()">
-            <span>بقية الأقسام</span>
-            <span id="nav-arrow" class="arrow-icon">▼</span>
+            <span>☰ القائمة الكاملة</span>
+            <span class="arrow-icon">▼</span>
         </div>
-        <div id="nav-menu-grid" class="nav-grid hidden"></div>
+
+        <div class="nav-grid" id="nav-menu-grid">
+            <button class="nav-btn" onclick="showSection('quran')">📖 المصحف</button>
+            <button class="nav-btn" onclick="showSection('azkar')">📿 الأذكار</button>
+            <button class="nav-btn" onclick="showSection('quiz')">❓ المسابقات</button>
+            <button class="nav-btn" onclick="showSection('calc')">📊 الحاسبة</button>
+        </div>
     </div>
+
+    <header>
+        <div class="video-container" id="header-video-frame" style="display:none;">
+            </div>
+        
+        <button class="theme-circle-btn" id="theme-btn" onclick="toggleTheme()">🌙</button>
+
+        <h1 id="header-title">حلقات الثريا</h1>
+        <p class="header-subtitle" id="header-subtitle">لتعليم القرآن الكريم والسنة النبوية</p>
+        <span class="header-location" id="header-location">📍 المكلا - الشافعي</span>
+    </header>
 
     <div class="container">
         
-        <div id="section-home" class="page-section active">
+        <div id="block-home" class="page-section active">
             
-            <div id="dynamic-custom-cards-container"></div>
+            <div id="home-welcome-msg" class="alert-box" style="display:none; background:#e0f2fe; color:#0369a1; border-color:#bae6fd;"></div>
 
-            <div id="block-news" style="display:none;">
-                <h2 style="color:var(--primary-color)" id="txt_news_title">📢 آخر الأخبار</h2>
-                <div class="news-ticker" style="background: #f1f5f9; padding: 10px; border-bottom: 2px solid var(--primary-color); border-radius: 8px; margin-bottom: 20px;">
-                    <marquee id="dynamic-news-bar" direction="right" scrollamount="6" style="font-weight: bold; color: #333; font-size: 1.1rem;">
-                        ⏳ جاري التحميل...
-                    </marquee>
+            <div id="dynamic-news-bar" style="margin-bottom:20px;"></div>
+
+            <div id="dynamic-question-box"></div>
+
+            <div class="card" id="student-login-card">
+                <h3 style="color:var(--primary-color); text-align:center;">👤 تسجيل دخول الطالب</h3>
+                <input type="text" id="student-name-input" class="form-input" placeholder="اكتب اسمك هنا..." style="text-align:center;">
+                <div id="name-save-result" style="text-align:center; margin-top:10px; display:none; color:green;"></div>
+                <div class="button-grid" style="margin-top:15px;">
+                    <button onclick="saveStudentName()" class="nav-btn" style="background:var(--primary-color); color:white;">حفظ الاسم</button>
+                    <button onclick="deleteStudentName()" class="nav-btn" style="border-color:#ef4444; color:#ef4444;">خروج</button>
                 </div>
             </div>
 
-            <div id="block-student" style="display:none;">
-                <div class="card" style="background: linear-gradient(135deg, #fffbeb 0%, #fff 100%); border: 1px solid #fcd34d;">
-                    <div style="text-align:center;">
-                        <span style="font-size:2rem;">👑</span>
-                        <h3 style="margin:5px 0; color:#d97706;" id="txt_student_title">نجم الأسبوع</h3>
-                        <h2 id="top-student-name" style="margin: 10px 0; color: var(--primary-color); font-size: 1.5rem;">...</h2>
-                        <p id="top-student-desc" style="color: gray; font-size: 0.9rem;">...</p>
-                    </div>
-                </div>
+            <div id="custom-cards-container"></div>
+
+            <div id="ranks-section" style="display:none;">
+                <div class="group-title">🏆 لوحة الشرف (الأوائل)</div>
+                <div id="ranks-grid-display"></div>
             </div>
 
-            <div id="block-question" style="display:none;">
-                <h2 style="color:var(--primary-color); margin-top:25px;" id="txt_question_title">❓ السؤال الأسبوعي</h2>
-                <div class="card" style="border-right: 4px solid var(--accent-color);">
-                <h3 id="weekly-question-text" style="color:var(--primary-color); margin-top:0;">...</h3>
-                    <div style="background: rgba(251, 191, 36, 0.1); padding: 10px; border-radius: 8px; margin-top:10px;">
-                        <strong>🏆 الفائز السابق:</strong> 
-                        <span id="weekly-winner-text" style="color: var(--primary-color); font-weight:bold;">...</span>
-                    </div>
-                    <button class="nav-btn" style="width:100%; margin-top:15px; border-color:#25D366; color:#25D366; display:flex; align-items:center; justify-content:center; gap:5px;" onclick="sendAnswerViaWhatsapp()">
-                        <span>💬 أرسل الإجابة (واتساب)</span>
-                    </button>
-                </div>
+            <div id="schedule-section" style="display:none;">
+                <div class="group-title">📅 الجداول الدراسية</div>
+                <div id="complex-schedule-display"></div>
             </div>
+
+            <div id="teachers-section" style="display:none;">
+                <div class="group-title">👨‍🏫 طاقم التدريس</div>
+                <div id="teachers-grid-display"></div>
+            </div>
+
         </div>
 
-        <div id="section-student" class="page-section">
-            <h2 style="color:var(--primary-color)">📖 ركن الطالب</h2>
-            <p style="text-align:center; color:gray; margin-bottom:20px;">أدوات ذكية لمساعدتك في رحلة القرآن</p>
-
-            <button class="accordion-btn" onclick="loadAzkarCategories()">📿 الأذكار والسبحة الإلكترونية <span>▼</span></button>
-            <div id="azkar-app-container" class="accordion-panel">
-                <div style="padding: 15px 0;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; background:var(--bg-light); padding:10px; border-radius:8px; border:1px dashed var(--border-color);">
-                        <label style="font-size:0.9rem;">🔄 تصفير العدادات:</label>
-                        <select id="reset-period-select" onchange="saveResetSetting()" style="padding:5px; border-radius:5px; border:1px solid var(--border-color);">
-                            <option value="24">كل 24 ساعة (يومياً)</option>
-                            <option value="12">كل 12 ساعة</option>
-                            <option value="manual">يدوياً فقط</option>
-                        </select>
-                    </div>
-                    <div id="azkar-categories-grid" class="button-grid"></div>
-                    <div id="azkar-list-container" style="display:none; margin-top:15px;">
-                        <div style="display:flex; gap:10px; margin-bottom:15px;">
-                            <button class="nav-btn" onclick="backToAzkarCategories()" style="flex:1;">🔙 عودة</button>
-                            <button class="nav-btn" onclick="resetCategoryCounters()" style="flex:1; border-color:#ef4444; color:#ef4444;">🔄 تصفير القسم</button>
-                        </div>
-                        <h3 id="azkar-category-title" style="color:var(--primary-color); text-align:center; margin-top:0;"></h3>
-                        <div id="azkar-items-list"></div>
-                    </div>
-                    <div id="subha-interface" style="display:none; margin-top:10px;">
-                        <div style="display:flex; gap:10px; align-items:stretch; margin-bottom:10px;">
-                            <button class="nav-btn" onclick="backToAzkarCategories()" style="padding:0 15px; font-size:1.2rem;">🔙</button>
-                            <div class="card" style="flex:1; margin:0; padding:10px 15px; display:flex; justify-content:space-between; align-items:center; border:2px solid var(--primary-color);">
-                                <div style="text-align:right;">
-                                    <div id="main-tasbeeh-counter" style="font-size:2.2rem; font-weight:bold; color:var(--accent-color); line-height:1;">0</div>
-                                </div>
-                                <div style="display:flex; flex-direction:column; gap:5px;">
-                                    <button class="nav-btn" onclick="subhaAction('undo')" style="padding:2px 8px; font-size:0.75rem; border-color:#f59e0b; color:#f59e0b; min-height:auto;">تراجع</button>
-                                    <button class="nav-btn" onclick="subhaAction('reset')" style="padding:2px 8px; font-size:0.75rem; border-color:#ef4444; color:#ef4444; min-height:auto;">تصفير</button>
-                                </div>
-                            </div>
-                        </div>
-                        <p id="current-tasbeeh-label" style="text-align:center; font-weight:bold; color:var(--primary-color); margin:5px 0; font-size:1rem;">سبحان الله</p>
-                        <div class="button-grid" style="grid-template-columns: repeat(3, 1fr); gap:5px; margin-bottom:10px;">
-                            <button class="calc-btn-option tasbeeh-btn-small" onclick="setTasbeeh('سبحان الله')">سبحان الله</button>
-                            <button class="calc-btn-option tasbeeh-btn-small" onclick="setTasbeeh('الحمد لله')">الحمد لله</button>
-                            <button class="calc-btn-option tasbeeh-btn-small" onclick="setTasbeeh('الله أكبر')">الله أكبر</button>
-                            <button class="calc-btn-option tasbeeh-btn-small" onclick="setTasbeeh('لا إله إلا الله')">لا إله إلا الله</button>
-                            <button class="calc-btn-option tasbeeh-btn-small" onclick="setTasbeeh('أستغفر الله')">أستغفر الله</button>
-                            <button class="calc-btn-option tasbeeh-btn-small" onclick="setTasbeeh('الصلاة على النبي')">الصلاة على النبي</button>
-                        </div>
-                        <button id="big-tap-btn" class="nav-btn active" style="width:100%; height:100px; font-size:1.5rem; border-radius:15px; box-shadow:0 5px 15px rgba(4, 120, 87, 0.3); display:flex; align-items:center; justify-content:center; gap:10px;" onclick="subhaAction('count')">
-                            <span>اضغط للعد</span> 👆
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card" style="margin-top:15px; border-right:4px solid #8b5cf6;">
-                <h3 style="margin-top:0;">⏰ منبه الحفظ الذكي</h3>
-                <div style="display:flex; gap:10px; margin-top:10px;">
-                    <input type="time" id="alarm-time" class="form-input">
-                    <button class="nav-btn active" onclick="setStudyAlarm()">🔔 ضبط</button>
-                </div>
-            </div>
-            
-            <button class="accordion-btn">🚀 خطة ختمي (بناءً على جهدي) <span>▼</span></button>
-            <div class="accordion-panel">
-                <div style="padding: 15px 0;">
-                    <div id="calc-step-1"><p><strong>1️⃣ كم يوماً تحفظ في الأسبوع؟</strong></p><div id="days-buttons-container" class="button-grid"></div></div>
-                    <div id="calc-step-2" style="display:none;"><p><strong>2️⃣ كم مقدار الحفظ اليومي؟</strong></p><div id="amount-buttons-container" class="button-grid"></div><div id="custom-amount-div" style="display:none; margin-top:10px;"><input type="number" id="custom-pages" class="form-input" placeholder="اكتب عدد الصفحات"><button class="nav-btn" style="margin-top:10px; width:100%" onclick="calculatePlan(document.getElementById('custom-pages').value)">احسب</button></div></div>
-                    <div id="calc-result" class="calc-result"></div>
-                    <button id="reset-calc" class="nav-btn" style="display:none; margin-top:10px; width:100%; border-color:#ef4444; color:#ef4444;" onclick="resetCalc()">حساب جديد 🔄</button>
-                </div>
-            </div>
-
-            <button class="accordion-btn">🧭 دليل الختم (بناءً على وقتي) <span>▼</span></button>
-            <div class="accordion-panel">
-                <div style="padding: 15px 0;">
-                    <div class="radio-group"><label class="radio-label"><input type="radio" name="planType" value="حفظ" checked> 🧠 خطة حفظ</label><label class="radio-label"><input type="radio" name="planType" value="قراءة"> 📖 خطة قراءة</label></div>
-                    <div class="calc-input-group"><label>🗓️ الختم بالأيام:</label><select id="target-days" class="form-select"></select></div>
-                    <div class="calc-input-group"><label>📅 الختم بالأشهر:</label><select id="target-months" class="form-select"></select></div>
-                    <div class="calc-input-group"><label>📆 الختم بالسنوات:</label><select id="target-years" class="form-select"></select></div>
-                    <button class="nav-btn active" style="width:100%; padding:15px;" onclick="calculateReversePlan()">✨ احسب خطتي</button>
-                    <div id="reverse-calc-result" class="calc-result"></div>
-                </div>
-            </div>
-
-            <button class="accordion-btn">🧠 اختبر حفظك (نظام ذكي) <span>▼</span></button>
-            <div class="accordion-panel">
-                <div style="padding: 15px 0;">
-                    <div id="quiz-controls">
-                        <div class="calc-input-group"><label>نطاق الاختبار:</label><select id="quiz-juz" class="form-select" onchange="updateQuizSurahs()"></select></div>
-                        <div class="calc-input-group"><label>السورة:</label><select id="quiz-surah" class="form-select"></select></div>
-                        <div class="calc-input-group"><label>نوع السؤال:</label><select id="quiz-type" class="form-select"><option value="complete">أكمل الآية</option><option value="prev_ayah">الآية السابقة</option><option value="next_ayah">الآية التالية</option><option value="ayah_num">رقم الآية</option><option value="page_num">رقم الصفحة</option><option value="surah_name">اسم السورة</option></select></div>
-                        <button class="nav-btn active" style="width:100%;" onclick="startQuiz()">🚀 ابدأ</button>
-                    </div>
-                    <div id="quiz-area" class="card" style="display:none; margin-top:15px; border:2px dashed var(--primary-color);">
-                        <p id="question-text" style="font-size:1.3rem; margin-bottom:20px; line-height:1.8;"></p>
-                        <button id="show-answer-btn" class="nav-btn" onclick="showAnswer()">إظهار الإجابة 👀</button>
-                        <div id="answer-box" style="display:none; background:rgba(4, 120, 87, 0.05); padding:15px; border-radius:8px; margin-top:10px;">
-                            <p id="answer-text" style="font-weight:bold; font-size:1.2rem; color:var(--primary-color); margin-bottom:10px;"></p>
-                            <small id="answer-details" style="color:gray; display:block; margin-top:5px; border-top:1px solid #eee; padding-top:5px;"></small>
-                            <div class="quiz-actions" style="margin-top:15px; display:flex; gap:10px;">
-                                <button class="nav-btn" onclick="nextQuestionSameType()" style="flex:1;">التالي ➡️</button>
-                                <button class="nav-btn" onclick="resetQuiz()" style="flex:1; border-color:gray; color:gray;">إنهاء ❌</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <button class="accordion-btn" onclick="openQuranApp()">📖 الختمة (المصحف الشريف) <span>▼</span></button>
-            <div id="quran-app-container" class="accordion-panel" style="background: var(--bg-light);">
-                <div style="padding: 15px 0;">
-                    <div class="quran-header-controls"><input type="text" id="quran-search" class="form-input" placeholder="🔍 ابحث عن سورة..." onkeyup="filterSurahs()"><button class="nav-btn" onclick="goToBookmark()" style="font-size:0.9rem;">🔖 استكمل</button></div>
-                    <div id="surah-grid" class="surah-grid-container"></div>
-                    <div id="reading-area" style="display:none;">
-                        <div class="reading-header"><button onclick="closeReading()" class="nav-btn" style="border:none;">🔙</button><h3 id="current-surah-title" style="margin:0; color:var(--primary-color); font-size:1rem;"></h3><div style="display:flex; gap:5px;"><button class="font-control-btn" onclick="changeFontSize(1)">A+</button><button class="font-control-btn" onclick="changeFontSize(-1)">A-</button></div></div>
-                        <div id="bookmark-tip" style="text-align:center; font-size:0.8rem; color:gray; margin-bottom:5px; display:none;">💡 اضغط على العلامة <span style="color:var(--accent-color)">🔖</span> بجانب الآية لحفظ مكانك</div>
-                        <div id="quran-text-display" class="quran-text-content"></div>
-                        <button class="nav-btn" style="width:100%; margin-top:30px; border-color:#d97706; color:#d97706;" onclick="showDuaa()">🤲 دعاء الختم</button>
-                    </div>
-                </div>
-            </div>
+        <div id="block-quran" class="page-section">
+            <div class="accordion-btn" onclick="openQuranApp()">📖 فتح المصحف الكامل</div>
+            <div id="quran-app-container" class="accordion-panel"></div>
         </div>
 
-        <div id="section-ranks" class="page-section">
-            <div id="block-ranks" style="display:none;">
-                <h2 style="color:var(--primary-color)">🏆 أوائل الحلقات</h2>
-                <div id="dynamic-ranks-list"></div>
-            </div>
+        <div id="block-azkar" class="page-section">
+            <div class="accordion-btn" onclick="loadAzkarCategories()">📿 حصن المسلم</div>
+            <div id="azkar-app-container" class="accordion-panel"></div>
         </div>
 
-        <div id="section-schedule" class="page-section">
-            <div id="block-schedule" style="display:none;">
-                <h2 style="color:var(--primary-color)" id="txt_schedule_title">📅 الجداول الدراسية</h2>
-                
-                <div id="dynamic-schedule-container">
-                    <p style="text-align:center; color:gray;">جاري تحميل الجداول...</p>
-                </div>
-                
-                <h2 style="color:#ef4444; margin-top:25px;">🏖️ الإجازات</h2>
-                <div class="card" style="border-right-color: #ef4444;">
-                    <ul id="dynamic-holidays-list" style="margin:0; padding-right:20px;">
-                        <li>جاري التحميل...</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div id="section-teachers" class="page-section">
-            <div id="block-teachers" style="display:none;">
-                <h2 style="color:var(--primary-color)" id="txt_teachers_title">👨‍🏫 المعلمون</h2>
-                <div id="dynamic-teachers-container">
-                    <p style="text-align:center; color:gray;">جاري تحميل المعلمين...</p>
-                </div>
-            </div>
-        </div>
-        
-        <div id="section-myname" class="page-section">
-            <h2 style="color:var(--primary-color)">🏷️ بطاقتي</h2>
+        <div id="block-quiz" class="page-section">
             <div class="card">
-                <p>سجل اسمك ليظهر في الموقع والرسائل.</p>
-                <div class="calc-input-group" style="margin-top:15px;">
-                    <label>الاسم الكريم:</label>
-                    <input type="text" id="student-name-input" class="form-input" placeholder="اسمك الثلاثي..." maxlength="30">
-                </div>
-                <div class="calc-input-group" style="margin-top:10px;">
-                    <label>اسم حلقتك:</label>
-                    <select id="student-ring-select" class="form-select">
-                        <option value="">اختر حلقتك...</option>
-                        <option value="حلقة أبو بكر الصديق">حلقة أبو بكر الصديق</option>
-                        <option value="حلقة عمر بن الخطاب">حلقة عمر بن الخطاب</option>
-                        <option value="حلقة عثمان بن عفان">حلقة عثمان بن عفان</option>
-                        <option value="حلقة علي بن أبي طالب">حلقة علي بن أبي طالب</option>
-                        <option value="حلقة زيد بن ثابت">حلقة زيد بن ثابت</option>
-                        <option value="غير محدد">غير ذلك</option>
-                    </select>
-                </div>
-                <button class="nav-btn active" style="width:100%; margin-top:10px; padding:12px;" onclick="saveStudentName()">حفظ البيانات 💾</button>
-                <button class="nav-btn" style="width:100%; margin-top:10px; padding:12px; border-color:#ef4444; color:#ef4444;" onclick="deleteStudentName()">حذف 🗑️</button>
-                <div id="name-save-result" class="calc-result"></div>
+                <h3>اختبر حفظك 🧠</h3>
+                <button onclick="startQuiz('complete')" class="nav-btn">أكمل الآية</button>
+                <div id="quiz-interface" style="display:none; margin-top:15px;"></div>
             </div>
         </div>
 
-        <div id="section-about" class="page-section">
-            <h2 style="color:var(--primary-color)" id="txt_about_title">🕌 من نحن</h2>
-            
-            <div class="card poetic-text" id="txt_about_content">
-                نحن حلقات الثريا لتحفيظ القرآن الكريم...
-            </div>
-            
-            <h2 style="color:var(--primary-color)" id="txt_contact_title">📞 تواصل معنا</h2>
-            <div class="contact-grid">
-                <a href="https://wa.me/967777006546" target="_blank" class="contact-box bg-whatsapp"><span class="contact-icon">💬</span><span>واتساب</span></a>
-                <a href="https://www.instagram.com/pb8.c?igsh=MWJ3YWNobGk1NmdtZQ==" target="_blank" class="contact-box bg-insta"><span class="contact-icon">📸</span><span>انستقرام</span></a>
-                <a href="tel:+967777006546" class="contact-box bg-call"><span class="contact-icon">📞</span><span>اتصال</span></a>
-                <a href="https://maps.app.goo.gl/dRRYPVJyqh2NKMg86" target="_blank" class="contact-box bg-map"><span class="contact-icon">📍</span><span>الموقع</span></a>
+        <div id="block-calc" class="page-section">
+            <div class="card">
+                <h3>حاسبة الختم 📊</h3>
+                <div id="days-buttons-container" class="button-grid"></div>
             </div>
         </div>
 
-        <div id="section-mobile" class="page-section">
-            <h2 style="color:var(--primary-color)">📱 التطبيق</h2>
-            <div class="card">قريباً بإذن الله...</div>
-        </div>
+    </div>
 
-    </div> 
-    
-    <footer id="txt_footer">جميع الحقوق محفوظة © 2026</footer>
+    <footer>
+        <p>جميع الحقوق محفوظة © حلقات الثريا 2024</p>
+        <button onclick="openLoginModal()" style="background:none; border:none; font-size:1.2rem; cursor:pointer; opacity:0.5;">🔒</button>
+    </footer>
 
-    <button onclick="openLoginModal()" style="position: fixed; bottom: 20px; left: 20px; background: #1e293b; color: white; border: 2px solid var(--primary-color); border-radius: 50%; width: 50px; height: 50px; font-size: 22px; cursor: pointer; z-index: 999999; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">🔒</button>
-
-    <div id="login-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000000; justify-content: center; align-items: center; backdrop-filter: blur(5px);">
-        <div style="background: white; padding: 30px; border-radius: 15px; width: 300px; text-align: center; border: 2px solid var(--primary-color);">
+    <div id="login-modal" class="popup-overlay">
+        <div class="popup-content">
             <h3 style="margin-top:0; color:#1e293b;">🔐 بوابة الإدارة</h3>
-            <input type="text" id="admin-user" placeholder="اسم المستخدم" style="width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 8px; text-align:center;">
+            <input type="text" id="admin-user" placeholder="البريد الإلكتروني" style="width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 8px; text-align:center;">
             <input type="password" id="admin-pass" placeholder="كلمة المرور" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px; text-align:center;">
             <button onclick="secureLogin()" style="width: 100%; padding: 12px; background: var(--primary-color); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight:bold;">دخول آمن 🚀</button>
             <button onclick="document.getElementById('login-modal').style.display='none'" style="margin-top: 15px; background: none; border: none; color: #ef4444; cursor: pointer; text-decoration: underline;">إلغاء</button>
@@ -325,16 +154,14 @@
 
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
-
-    <script src="js/data.js"></script>
-    <script src="js/storage.js"></script>
-    <script src="js/calculator.js"></script>
-    <script src="js/quiz.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script> <script src="js/data.js"></script>
+    <script src="js/logic.js"></script>
+    <script src="js/custom_logic.js"></script>
     <script src="js/quran_app.js"></script>
     <script src="js/azkar.js"></script>
-    <script src="js/logic.js"></script>
-
-    <script src="js/custom_logic.js"></script>
+    <script src="js/quiz.js"></script>
+    <script src="js/calculator.js"></script>
+    <script src="js/storage.js"></script>
 
 </body>
 </html>
