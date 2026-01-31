@@ -11,68 +11,7 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/layout.css">
-    <link rel="stylesheet" href="css/components.css">
-    <link rel="stylesheet" href="css/darkmode.css">
-
-    <style>
-        /* --- 1. شاشة التحميل (منع الوميض) --- */
-        #site-loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff; z-index: 9999999; display: flex; justify-content: center; align-items: center; flex-direction: column; transition: opacity 0.5s ease; }
-        .spinner { border: 5px solid #f3f3f3; border-top: 5px solid #047857; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin-bottom: 20px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* --- 2. تنسيق الجداول (التصميم القديم: أزرار تفتح وتغلق) --- */
-        .time-group-title {
-            background: var(--bg-light); border-right: 5px solid var(--accent-color);
-            padding: 10px 15px; margin: 20px 0 10px 0; font-weight: bold; color: var(--primary-color);
-            border-radius: 5px; font-size: 1.1rem;
-        }
-        .ring-accordion-btn {
-            width: 100%; text-align: right; background: white; border: 1px solid #e2e8f0;
-            padding: 15px; margin-bottom: 5px; border-radius: 8px; cursor: pointer;
-            font-weight: bold; display: flex; justify-content: space-between; align-items: center;
-            transition: 0.2s; color: #334155;
-        }
-        .ring-accordion-btn:hover { background: #f8fafc; border-color: var(--accent-color); }
-        .ring-accordion-btn.active { background: var(--accent-color); color: white; border-color: var(--accent-color); }
-        .ring-schedule-panel {
-            display: none; padding: 10px; background: white; border: 1px solid #e2e8f0;
-            border-top: none; border-radius: 0 0 8px 8px; margin-bottom: 10px; animation: slideDown 0.3s ease;
-        }
-        .schedule-table-simple { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-        .schedule-table-simple th, .schedule-table-simple td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-        .schedule-table-simple th { background: #f1f5f9; color: var(--primary-color); }
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* --- 3. تنسيق المعلمين (القائمة النصية المدمجة) --- */
-        .teacher-row {
-            display: flex; align-items: center; gap: 10px; padding: 12px;
-            background: white; border-bottom: 1px solid #eee; transition: 0.2s;
-        }
-        .teacher-row:last-child { border-bottom: none; }
-        .teacher-icon { font-size: 1.2rem; color: var(--accent-color); background: #eff6ff; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
-        .teacher-info h4 { margin: 0; font-size: 1rem; color: #333; }
-        .teacher-info p { margin: 2px 0 0 0; font-size: 0.85rem; color: gray; }
-
-        /* --- 4. تنسيق البطاقات المخصصة (الديناميكية) --- */
-        .custom-dynamic-card {
-            background: white; border-radius: 10px; padding: 15px; margin-bottom: 15px;
-            border: 1px solid #eee; border-right-width: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            transition: transform 0.2s;
-        }
-        .custom-dynamic-card h3 { margin-top: 0; margin-bottom: 10px; }
-        .custom-dynamic-card:active { transform: scale(0.98); }
-
-        /* --- 5. تنسيق الإشعار المنبثق --- */
-        .popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 20000; display: none; justify-content: center; align-items: center; }
-        .popup-content { background: white; padding: 30px; border-radius: 15px; max-width: 90%; width: 400px; text-align: center; border: 3px solid var(--accent-color); animation: popUp 0.4s ease; }
-        .dont-show-again { margin-top: 10px; font-size: 0.8rem; color: gray; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; }
-        
-        /* --- 6. وضع الصيانة --- */
-        #maintenance-mode { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #1e293b; color: white; z-index: 999999; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-    </style>
-</head>
+    <link rel="stylesheet" href="css/main.css">        <link rel="stylesheet" href="css/layout.css">      <link rel="stylesheet" href="css/components.css">  <link rel="stylesheet" href="css/darkmode.css">    <link rel="stylesheet" href="css/custom_style.css"></head>
 <body oncontextmenu="return false;">
 
     <div id="site-loader">
@@ -98,6 +37,7 @@
             </div>
         </div>
     </div>
+    
     <div id="toast-container" class="toast-container"></div>
 
     <header>
@@ -164,6 +104,7 @@
                 </div>
             </div>
         </div>
+
         <div id="section-student" class="page-section">
             <h2 style="color:var(--primary-color)">📖 ركن الطالب</h2>
             <p style="text-align:center; color:gray; margin-bottom:20px;">أدوات ذكية لمساعدتك في رحلة القرآن</p>
@@ -289,8 +230,7 @@
         <div id="section-ranks" class="page-section">
             <div id="block-ranks" style="display:none;">
                 <h2 style="color:var(--primary-color)">🏆 أوائل الحلقات</h2>
-                <div id="dynamic-ranks-list">
-                    </div>
+                <div id="dynamic-ranks-list"></div>
             </div>
         </div>
 
@@ -345,6 +285,7 @@
                 <div id="name-save-result" class="calc-result"></div>
             </div>
         </div>
+
         <div id="section-about" class="page-section">
             <h2 style="color:var(--primary-color)" id="txt_about_title">🕌 من نحن</h2>
             
@@ -366,15 +307,9 @@
             <div class="card">قريباً بإذن الله...</div>
         </div>
 
-    </div> <footer id="txt_footer">جميع الحقوق محفوظة © 2026</footer>
-
-    <script src="js/data.js"></script>
-    <script src="js/storage.js"></script>
-    <script src="js/calculator.js"></script>
-    <script src="js/quiz.js"></script>
-    <script src="js/quran_app.js"></script>
-    <script src="js/azkar.js"></script>
-    <script src="js/logic.js"></script>
+    </div> 
+    
+    <footer id="txt_footer">جميع الحقوق محفوظة © 2026</footer>
 
     <button onclick="openLoginModal()" style="position: fixed; bottom: 20px; left: 20px; background: #1e293b; color: white; border: 2px solid var(--primary-color); border-radius: 50%; width: 50px; height: 50px; font-size: 22px; cursor: pointer; z-index: 999999; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">🔒</button>
 
@@ -391,350 +326,15 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
-    <script>
-        const firebaseConfig = {
-          apiKey: "AIzaSyBm8ML-1EKvQT76FJlzIQf4sn4M-MHhiRk",
-          authDomain: "quran-app-93e24.firebaseapp.com",
-          projectId: "quran-app-93e24",
-          storageBucket: "quran-app-93e24.firebasestorage.app",
-          messagingSenderId: "82150677933",
-          appId: "1:82150677933:web:64213e04463c1bb3179524"
-        };
-        try {
-            firebase.initializeApp(firebaseConfig);
-            const db = firebase.database();
+    <script src="js/data.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/calculator.js"></script>
+    <script src="js/quiz.js"></script>
+    <script src="js/quran_app.js"></script>
+    <script src="js/azkar.js"></script>
+    <script src="js/logic.js"></script>
 
-            // الاستماع للبيانات (Realtime)
-            db.ref().on('value', (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    // 1. تطبيق الإعدادات (صيانة، فيديو، إخفاء أقسام)
-                    applySettings(data);
-                    
-                    // 2. تطبيق المحتوى والنصوص
-                    applyContent(data);
-                    
-                    // 3. بناء الأقسام الديناميكية المعقدة
-                    renderComplexSchedule(data.schedule_complex); // الجداول القديمة
-                    renderTeachers(data.teachers_list_v2);        // المعلمون (نص)
-                    renderCustomCards(data.custom_cards);         // الأزرار الإضافية
-                    renderRanks(data.ranks_list);                 // أوائل الحلقات
-                    renderHolidays(data.holidays_list);           // الإجازات
+    <script src="js/custom_logic.js"></script>
 
-                    // 4. ✅ إخفاء شاشة التحميل (Anti-Flicker)
-                    setTimeout(() => {
-                        const loader = document.getElementById('site-loader');
-                        if(loader) {
-                            loader.style.opacity = '0';
-                            setTimeout(() => loader.style.display = 'none', 500);
-                        }
-                    }, 800);
-                }
-            });
-
-        } catch (error) { console.error(error); }
-
-        // --- دوال التطبيق ---
-
-        function applySettings(data) {
-            if(!data.settings) return;
-            const s = data.settings;
-
-            // أ. وضع الصيانة
-            const maint = document.getElementById('maintenance-mode');
-            if(s.maintenance_mode === true) {
-                maint.style.display = 'flex';
-                document.querySelector('.container').style.display = 'none';
-                document.querySelector('header').style.display = 'none';
-            } else {
-                maint.style.display = 'none';
-                document.querySelector('.container').style.display = 'block';
-                document.querySelector('header').style.display = 'block';
-            }
-
-            // ب. الإشعار المنبثق (الذكية)
-            const popup = document.getElementById('site-notification');
-            const dontShow = localStorage.getItem('dont_show_popup');
-            
-            // يظهر فقط إذا: (مفعل من الأدمن) + (المستخدم لم يختر "عدم الإظهار")
-            if(s.popup_active === true && dontShow !== 'true') {
-                popup.style.display = 'flex';
-                document.getElementById('notif-title').innerText = s.popup_title || "تنبيه";
-                document.getElementById('notif-body').innerText = s.popup_body || "...";
-            } else {
-                popup.style.display = 'none';
-            }
-
-            // ج. إخفاء/إظهار الأقسام الرئيسية
-            toggleSection('block-news', s.show_news);
-            toggleSection('block-student', s.show_student);
-            toggleSection('block-question', s.show_question);
-            toggleSection('block-teachers', s.show_teachers);
-            toggleSection('block-schedule', s.show_schedule);
-            toggleSection('block-ranks', s.show_ranks); // قسم الأوائل الجديد
-
-            // د. الفيديو
-            if(s.video_url) {
-                const vid = document.getElementById('bg-video');
-                if(!vid.src.includes(s.video_url)) vid.src = s.video_url;
-            }
-        }
-
-        function applyContent(data) {
-            // شريط الأخبار والسؤال
-            if(data.news_bar) setTxt('dynamic-news-bar', data.news_bar.text);
-            if(data.weekly_question) {
-                setHTML('weekly-question-text', `<strong>سؤال الأسبوع:</strong> ${data.weekly_question.text}`);
-                setTxt('weekly-winner-text', data.weekly_question.last_winner);
-            }
-            if(data.top_student) {
-                setTxt('top-student-name', data.top_student.name);
-                setTxt('top-student-desc', data.top_student.category);
-            }
-            
-            // نصوص الموقع (من نحن، الهيدر، الفوتر)
-            if(data.site_content) {
-                const c = data.site_content;
-                setTxt('txt_header_title', c.txt_header_title);
-                setTxt('txt_header_subtitle', c.txt_header_subtitle);
-                setTxt('txt_header_location', c.txt_header_location);
-                setTxt('txt_news_title', c.txt_news_title);
-                setTxt('txt_student_title', c.txt_student_title);
-                setTxt('txt_question_title', c.txt_question_title);
-                setTxt('txt_about_title', c.txt_about_title);
-                // هنا نستخدم setHTML ليحافظ على تنسيق الأبيات الشعرية
-                setHTML('txt_about_content', c.txt_about_content); 
-                setTxt('txt_contact_title', c.txt_contact_title);
-                setTxt('txt_footer', c.txt_footer);
-                if(c.txt_schedule_title) setTxt('txt_schedule_title', c.txt_schedule_title);
-                if(c.txt_teachers_title) setTxt('txt_teachers_title', c.txt_teachers_title);
-            }
-        }
-        // --- 5. دوال بناء المحتوى المعقد (Core Logic) ---
-
-        // أ. بناء البطاقات المخصصة (الديناميكية)
-        // هذه الدالة تبني الأزرار التي تضيفها أنت من الأدمن (تكريم، دورات، إعلانات)
-        function renderCustomCards(list) {
-            const container = document.getElementById('dynamic-custom-cards-container');
-            if(!container) return;
-            container.innerHTML = ''; // مسح القديم
-
-            if(!list) return;
-
-            Object.values(list).forEach(card => {
-                // إذا قمت بإخفاء البطاقة من الأدمن، لا نعرضها
-                if(card.active === false) return;
-
-                const div = document.createElement('div');
-                div.className = 'custom-dynamic-card';
-                // تلوين الحدود حسب اللون الذي اخترته في الأدمن
-                div.style.borderRightColor = card.color || '#3b82f6';
-                
-                let html = `<h3 style="color:${card.color || '#333'}">${card.title}</h3>`;
-                html += `<p style="white-space: pre-line;">${card.text}</p>`; // pre-line للحفاظ على الأسطر الجديدة
-                
-                // إذا أضفت رابطاً للزر
-                if(card.link) {
-                    html += `<a href="${card.link}" target="_blank" class="nav-btn" style="margin-top:10px; border-color:${card.color}; color:${card.color}; width:auto; display:inline-block;">${card.btn_text || 'اضغط هنا'}</a>`;
-                }
-
-                div.innerHTML = html;
-                container.appendChild(div);
-            });
-        }
-
-        // ب. بناء الجدول المعقد (التصميم القديم: عصر/مغرب + أزرار)
-        function renderComplexSchedule(data) {
-            const container = document.getElementById('dynamic-schedule-container');
-            if(!container) return;
-            container.innerHTML = '';
-
-            if(!data) { container.innerHTML = '<p style="text-align:center;">لا توجد جداول حالياً</p>'; return; }
-
-            // الترتيب لضمان ظهور العصر قبل المغرب (ترتيب أبجدي للمفاتيح: time_1, time_2)
-            Object.keys(data).sort().forEach(timeKey => {
-                const timeSection = data[timeKey];
-                if(!timeSection.rings) return;
-
-                // 1. عنوان الوقت (مثلاً: حلقات العصر) - بالتصميم القديم
-                const timeHeader = document.createElement('div');
-                timeHeader.className = 'time-group-title';
-                timeHeader.innerText = timeSection.title || "فترة";
-                container.appendChild(timeHeader);
-
-                // 2. الحلقات داخل هذا الوقت (أزرار قابلة للفتح)
-                Object.values(timeSection.rings).forEach(ring => {
-                    // الزر (Accordion)
-                    const btn = document.createElement('div');
-                    btn.className = 'ring-accordion-btn';
-                    btn.innerHTML = `<span>📖 ${ring.name}</span> <span>▼</span>`;
-                    
-                    // اللوحة (Panel) المخفية التي تحتوي على الجدول
-                    const panel = document.createElement('div');
-                    panel.className = 'ring-schedule-panel';
-                    
-                    // رسم جدول الأسبوع (السبت -> الخميس)
-                    let tableHTML = `
-                        <table class="schedule-table-simple">
-                            <thead><tr><th>اليوم</th><th>المقرر / النشاط</th></tr></thead>
-                            <tbody>
-                                <tr><td>السبت</td><td>${ring.sat || '-'}</td></tr>
-                                <tr><td>الأحد</td><td>${ring.sun || '-'}</td></tr>
-                                <tr><td>الاثنين</td><td>${ring.mon || '-'}</td></tr>
-                                <tr><td>الثلاثاء</td><td>${ring.tue || '-'}</td></tr>
-                                <tr><td>الأربعاء</td><td>${ring.wed || '-'}</td></tr>
-                                <tr><td>الخميس</td><td>${ring.thu || '-'}</td></tr>
-                            </tbody>
-                        </table>
-                    `;
-                    panel.innerHTML = tableHTML;
-
-                    // برمجة الزر للفتح والإغلاق عند الضغط
-                    btn.onclick = function() {
-                        this.classList.toggle('active');
-                        if (panel.style.display === "block") {
-                            panel.style.display = "none";
-                            this.querySelector('span:last-child').innerText = '▼';
-                        } else {
-                            panel.style.display = "block";
-                            this.querySelector('span:last-child').innerText = '▲';
-                        }
-                    };
-
-                    container.appendChild(btn);
-                    container.appendChild(panel);
-                });
-            });
-        }
-
-        // ج. بناء قائمة المعلمين (التصميم النصي الجديد)
-        function renderTeachers(list) {
-            const container = document.getElementById('dynamic-teachers-container');
-            if(!container) return;
-            container.innerHTML = '';
-            
-            if(!list) { container.innerHTML = '<p>لا يوجد معلمون حالياً</p>'; return; }
-
-            Object.values(list).forEach(t => {
-                const div = document.createElement('div');
-                div.className = 'teacher-row'; // استدعاء تصميم CSS الجديد
-                
-                div.innerHTML = `
-                    <div class="teacher-icon"><i class="fas fa-user-tie"></i></div>
-                    <div class="teacher-info">
-                        <h4>${t.name}</h4>
-                        <p>${t.role || 'معلم فاضل'}</p>
-                    </div>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        // د. بناء قائمة الأوائل
-        function renderRanks(list) {
-            const container = document.getElementById('dynamic-ranks-list');
-            if(!container) return;
-            container.innerHTML = '';
-            
-            if(!list) { container.innerHTML = '<p>لم يتم رفع الأسماء بعد</p>'; return; }
-
-            // إنشاء جدول أنيق للأوائل
-            let html = '<table class="schedule-table-simple" style="width:100%"><thead><tr><th>المركز</th><th>الطالب</th><th>الحلقة</th></tr></thead><tbody>';
-            Object.values(list).forEach(r => {
-                let medal = '';
-                if(r.rank == 1) medal = '🥇';
-                else if(r.rank == 2) medal = '🥈';
-                else if(r.rank == 3) medal = '🥉';
-                
-                html += `<tr>
-                    <td>${medal} ${r.rank}</td>
-                    <td><strong>${r.name}</strong></td>
-                    <td>${r.ring}</td>
-                </tr>`;
-            });
-            html += '</tbody></table>';
-            container.innerHTML = html;
-        }
-
-        // هـ. بناء قائمة الإجازات
-        function renderHolidays(list) {
-            const ul = document.getElementById('dynamic-holidays-list');
-            if(!ul) return;
-            ul.innerHTML = '';
-            if(!list) { ul.innerHTML = '<li>لا توجد إجازات قريبة</li>'; return; }
-            
-            Object.values(list).forEach(h => {
-                const li = document.createElement('li');
-                li.innerText = h.text;
-                ul.appendChild(li);
-            });
-        }
-        // --- 6. دوال مساعدة (Helpers) ---
-
-        function setTxt(id, txt) { const el = document.getElementById(id); if(el && txt) el.innerText = txt; }
-        
-        // نستخدم innerHTML هنا بحذر (فقط للنصوص التي تحتاج تنسيق مثل الأبيات الشعرية)
-        function setHTML(id, txt) { const el = document.getElementById(id); if(el && txt) el.innerHTML = txt; }
-
-        function toggleSection(id, show) {
-            const el = document.getElementById(id);
-            // إذا كان show == true نعرضه، غير ذلك نخفيه
-            // ملاحظة: الأقسام تبدأ مخفية (display:none) لمنع الوميض
-            if(el) {
-                if(show === true) el.style.display = 'block';
-                else el.style.display = 'none';
-            }
-        }
-
-        // --- 7. برمجة الإشعار المنبثق ---
-
-        function closePopup() {
-            document.getElementById('site-notification').style.display = 'none';
-        }
-
-        function disablePopupForever() {
-            const checkbox = document.getElementById('popup-forever-check');
-            if(checkbox.checked) {
-                // حفظ الخيار في ذاكرة المتصفح
-                localStorage.setItem('dont_show_popup', 'true');
-                alert("تم! لن تظهر لك هذه الرسالة مرة أخرى في هذا الجهاز.");
-                closePopup();
-            }
-        }
-
-        // --- 8. برمجة تسجيل الدخول (Admin) ---
-
-        function openLoginModal() { document.getElementById('login-modal').style.display = 'flex'; }
-        
-        function secureLogin() {
-            const u = document.getElementById('admin-user').value;
-            const p = document.getElementById('admin-pass').value;
-            const db = firebase.database();
-            
-            // التحقق من قاعدة البيانات
-            db.ref('admin_account').once('value').then(snap => {
-                const creds = snap.val();
-                let realU = "admin", realP = "12345"; // القيم الافتراضية
-                
-                if(creds) { 
-                    realU = creds.username; 
-                    realP = creds.password; 
-                }
-                
-                // مقارنة المدخلات
-                if(u === realU && p === realP) {
-                    // نجاح الدخول
-                    localStorage.setItem('admin_token', 'SECRET_PASS_123');
-                    window.location.href = "admin.html"; // التوجيه لصفحة الأدمن
-                } else {
-                    alert("⛔ خطأ في اسم المستخدم أو كلمة المرور");
-                }
-            }).catch(error => {
-                console.error(error);
-                alert("حدث خطأ في الاتصال، تأكد من الإنترنت.");
-            });
-        }
-
-    </script>
 </body>
 </html>
