@@ -5,13 +5,18 @@
 
 // 1. إعدادات فايربيس (Firebase Config)
 const firebaseConfig = {
-    apiKey: "AIzaSyBm8ML-1EKvQT76FJlzIQf4sn4M-MHhiRk",
-    authDomain: "quran-app-93e24.firebaseapp.com",
-    projectId: "quran-app-93e24",
-    storageBucket: "quran-app-93e24.firebasestorage.app",
-    messagingSenderId: "82150677933",
-    appId: "1:82150677933:web:64213e04463c1bb3179524"
+  apiKey: "AIzaSyBm8ML-1EKvQT76FJlzIQf4sn4M-MHhiRk",
+  authDomain: "quran-app-93e24.firebaseapp.com",
+  projectId: "quran-app-93e24",
+  storageBucket: "quran-app-93e24.firebasestorage.app",
+  messagingSenderId: "82150677933",
+  appId: "1:82150677933:web:64213e04463c1bb3179524"
 };
+
+// تهيئة الاتصال (هذا السطر مهم جداً)
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
 
 // تهيئة الاتصال إذا لم يكن مهيأ
 if (!firebase.apps.length) {
