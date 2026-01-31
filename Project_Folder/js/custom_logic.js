@@ -2,6 +2,7 @@
    ملف: js/custom_logic.js (معدل للحماية)
    الوظيفة: جلب البيانات + تسجيل الدخول الآمن
    ============================================================ */
+alert("النسخة الجديدة تعمل V2");
 
 const firebaseConfig = {
   apiKey: "AIzaSyBm8ML-1EKvQT76FJlzIQf4sn4M-MHhiRk",
